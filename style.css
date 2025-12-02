@@ -1,6 +1,8 @@
+/* ---------- GLOBAL ---------- */
+
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #0f1224 0%, #050711 55%, #020308 100%);
+  background: radial-gradient(circle at top, #14142c 0%, #05040d 50%, #020207 100%);
   color: #f5f5ff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -14,30 +16,32 @@ body {
 header h1 {
   text-align: center;
   margin: 0 0 4px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .subtitle {
   text-align: center;
   margin: 0 0 20px;
   font-size: 0.9rem;
-  color: #98a4ff;
+  color: #c8b58a;
+  font-family: "Georgia", "Times New Roman", serif;
 }
+
+/* ---------- MAIN LAYOUT ---------- */
 
 main {
   display: flex;
   gap: 20px;
 }
 
-/* ---- Panels ---- */
-
 .form-section,
 .chart-section {
-  background: linear-gradient(145deg, #13182b, #090c18);
+  background: radial-gradient(circle at top left, #1b1f35 0%, #080a13 70%);
   padding: 20px;
   border-radius: 14px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-  border: 1px solid rgba(122, 156, 255, 0.15);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+  border: 1px solid rgba(214, 191, 130, 0.35);
 }
 
 .form-section {
@@ -49,7 +53,7 @@ main {
   text-align: center;
 }
 
-/* ---- Layout ---- */
+/* ---------- FORM ---------- */
 
 .form-grid {
   display: grid;
@@ -63,21 +67,19 @@ label {
   font-size: 0.9rem;
 }
 
-/* ---- Inputs ---- */
-
 input {
   padding: 7px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(138, 159, 255, 0.3);
-  background: #151c35;
-  color: white;
+  border: 1px solid rgba(214, 191, 130, 0.45);
+  background: #151727;
+  color: #f5f5ff;
   font-size: 0.9rem;
 }
 
 input:focus {
   outline: none;
-  border-color: #8f9dff;
-  box-shadow: 0 0 0 1px rgba(143, 157, 255, 0.4);
+  border-color: #f4e0a3;
+  box-shadow: 0 0 0 1px rgba(244, 224, 163, 0.5);
 }
 
 #imagePreview {
@@ -87,12 +89,14 @@ input:focus {
   margin-top: 10px;
   border-radius: 10px;
   background: #1b2342;
-  border: 1px solid #2d355a;
+  border: 1px solid #a0824a;
 }
 
 .file-label input {
   margin-top: 6px;
 }
+
+/* ---------- BUTTONS ---------- */
 
 .button-row {
   margin-top: 15px;
@@ -101,15 +105,17 @@ input:focus {
 }
 
 button {
-  padding: 10px 14px;
-  background: linear-gradient(135deg, #7f5af0, #2cb67d);
-  color: white;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #c49b42, #f4d06f);
+  color: #23140a;
   border: none;
   border-radius: 999px;
   cursor: pointer;
   font-size: 0.9rem;
-  font-weight: 500;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+  font-weight: 600;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 button:hover {
@@ -118,18 +124,19 @@ button:hover {
 
 button:active {
   transform: translateY(0);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.7);
 }
 
-/* ---- Preview Canvas ---- */
+/* ---------- PREVIEW CANVAS ---------- */
 
 canvas {
   margin-top: 20px;
   background: radial-gradient(circle at center, #151b35 0%, #050712 100%);
   border-radius: 12px;
+  border: 1px solid rgba(214, 191, 130, 0.35);
 }
 
-/* ---------------- MODAL (GOV FILE STYLE) ---------------- */
+/* ---------- MODAL ---------- */
 
 .modal.hidden {
   display: none;
@@ -138,121 +145,138 @@ canvas {
 .modal {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top, rgba(6,10,35,0.95), rgba(1,2,8,0.95));
+  background: radial-gradient(circle at top, rgba(9, 8, 20, 0.96), rgba(3, 2, 10, 0.98));
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 30px;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .modal-content {
-  background: radial-gradient(circle at top left, #151a30, #050815);
-  padding: 20px 22px 22px;
-  border-radius: 16px;
+  position: relative;
+  background:
+    radial-gradient(circle at top left, #2a2420 0%, #151015 35%, #0a0c18 100%);
+  padding: 22px 24px 24px;
+  border-radius: 18px;
   width: 90%;
   max-width: 1300px;
-  position: relative;
-  border: 1px solid rgba(0, 255, 255, 0.4);
-  box-shadow: 0 28px 60px rgba(0,0,0,0.85);
+  border: 2px solid rgba(198, 170, 95, 0.8);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,0.9),
+    0 0 40px rgba(120, 199, 255, 0.35);
 }
 
-/* Close button */
+/* ---------- MODAL HEADER ---------- */
+
+.gov-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(214, 191, 130, 0.5);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.gov-sigil {
+  width: 45px;
+  height: 45px;
+  border-radius: 999px;
+  border: 2px solid rgba(120, 199, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: #f7e7b2;
+  box-shadow: 0 0 10px rgba(120,199,255,0.7);
+}
+
+.gov-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.gov-title-main {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 1.2rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f3e0b5;
+}
+
+.gov-title-sub {
+  font-size: 0.85rem;
+  color: #bfb49b;
+}
+
+.gov-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  background: linear-gradient(90deg, rgba(84, 63, 30, 0.95), rgba(28, 40, 69, 0.95));
+  border-radius: 999px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border: 1px solid rgba(214, 191, 130, 0.6);
+}
+
+/* ---------- CLOSE BUTTON ---------- */
 
 .close-btn {
   position: absolute;
-  right: 12px;
-  top: 10px;
-  background: #ff3d5f;
+  right: 14px;
+  top: 12px;
+  background: #8b1e2f;
   border: none;
   border-radius: 999px;
-  color: white;
+  color: #fceae0;
   padding: 4px 10px;
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
+  box-shadow: 0 0 12px rgba(139, 30, 47, 0.7);
 }
 
-/* Gov header strip */
-
-.gov-header {
-  border-bottom: 1px solid rgba(120, 255, 255, 0.4);
-  padding-bottom: 8px;
-  margin-bottom: 10px;
-}
-
-.gov-tag {
-  font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 0.85rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #00f5ff;
-}
-
-.gov-meta {
-  margin-top: 4px;
-  font-size: 0.8rem;
-  color: #ffc857;
-}
-
-/* Modal body layout */
+/* ---------- NEW 3-COLUMN MODAL LAYOUT ---------- */
 
 #modalWrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 360px 1fr 600px;
   gap: 26px;
-  margin-top: 8px;
+  margin-top: 16px;
+  align-items: start;
 }
 
-/* Left: image + info */
+/* ---------- LEFT COLUMN (IMAGE) ---------- */
 
 .modal-left {
-  width: 360px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.modal-image-frame {
-  border-radius: 10px;
-  padding: 8px;
-  background: radial-gradient(circle at top, #141b38, #070a18);
-  border: 1px solid rgba(0, 255, 255, 0.35);
-}
-
-#modalImage {
   width: 100%;
-  border-radius: 8px;
-  object-fit: cover;
 }
 
-.modal-info-block {
-  padding: 10px 12px;
+.modal-parchment {
+  position: relative;
+  padding: 18px 16px 16px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at top, #f7f0d9 0%, #e3cf97 40%, #c3a56e 75%, #7c6138 100%);
+  box-shadow:
+    0 0 0 1px rgba(60, 40, 22, 0.8),
+    inset 0 0 20px rgba(85, 60, 24, 0.7);
+}
+
+.modal-parchment::before,
+.modal-parchment::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
   border-radius: 10px;
-  background: #111524;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 0.9rem;
-  color: #e2e6ff;
-  line-height: 1.5rem;
+  border: 1px dashed rgba(90, 60, 25, 0.9);
+  opacity: 0.7;
 }
 
-/* Right: chart */
-
-.modal-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.chart-frame {
-  width: 100%;
-  padding: 10px;
-  border-radius: 12px;
-  background: radial-gradient(circle at top, #151c3c, #060816);
-  border: 1px solid rgba(0, 255, 255, 0.25);
-}
-
-.download-btn {
-  margin-top: 12px;
-  background: linear-gradient(135deg, #ff7a8a, #ffbf69);
-}
+.wax-seal {
+  position: absolute;
+  top: -12px;
