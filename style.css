@@ -2,13 +2,18 @@ body {
   margin: 0;
   background: #0b1020;
   color: white;
-  font-family: system-ui;
+  font-family: system-ui, sans-serif;
 }
 
 .page-container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+header h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 main {
@@ -16,22 +21,25 @@ main {
   gap: 20px;
 }
 
-.form-section {
-  background: #12172a;
+.form-section,
+.chart-section {
+  background: #121728;
   padding: 20px;
   border-radius: 14px;
+}
+
+.form-section {
   flex: 1;
 }
 
 .chart-section {
-  background: #12172a;
-  padding: 20px;
-  border-radius: 14px;
+  width: 600px;
+  text-align: center;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 10px;
 }
 
@@ -42,10 +50,10 @@ label {
 }
 
 input {
-  padding: 6px 8px;
+  padding: 7px 10px;
   border-radius: 8px;
   border: none;
-  background: #1c2340;
+  background: #1b2342;
   color: white;
 }
 
@@ -54,24 +62,30 @@ input {
 }
 
 #imagePreview {
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   object-fit: cover;
   margin-top: 10px;
   border-radius: 10px;
-  background: #1c2340;
+  background: #1b2342;
+  border: 1px solid #2d355a;
+}
+
+.button-row {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
 }
 
 button {
-  margin-top: 10px;
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 10px 14px;
   background: #6f4df7;
   color: white;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
 }
 
 canvas {
-  margin-top: 10px;
+  margin-top: 20px;
 }
