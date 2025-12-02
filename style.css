@@ -1,4 +1,4 @@
-/* ---------- GLOBAL ---------- */
+/* GLOBAL */
 
 body {
   margin: 0;
@@ -23,12 +23,11 @@ header h1 {
 .subtitle {
   text-align: center;
   margin: 0 0 20px;
-  font-size: 0.9rem;
-  color: #c8b58a;
-  font-family: "Georgia", "Times New Roman", serif;
+  color: #d4c299;
+  font-size: 0.95rem;
 }
 
-/* ---------- MAIN LAYOUT ---------- */
+/* MAIN LAYOUT */
 
 main {
   display: flex;
@@ -40,8 +39,8 @@ main {
   background: radial-gradient(circle at top left, #1b1f35 0%, #080a13 70%);
   padding: 20px;
   border-radius: 14px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.7);
   border: 1px solid rgba(214, 191, 130, 0.35);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
 }
 
 .form-section {
@@ -53,7 +52,7 @@ main {
   text-align: center;
 }
 
-/* ---------- FORM ---------- */
+/* INPUTS */
 
 .form-grid {
   display: grid;
@@ -67,76 +66,50 @@ label {
   font-size: 0.9rem;
 }
 
-input {
-  padding: 7px 10px;
+input, select {
+  padding: 8px;
   border-radius: 8px;
   border: 1px solid rgba(214, 191, 130, 0.45);
   background: #151727;
   color: #f5f5ff;
-  font-size: 0.9rem;
 }
 
-input:focus {
-  outline: none;
+input:focus, select:focus {
   border-color: #f4e0a3;
-  box-shadow: 0 0 0 1px rgba(244, 224, 163, 0.5);
+  outline: none;
 }
 
 #imagePreview {
+  margin-top: 8px;
   width: 140px;
   height: 140px;
-  object-fit: cover;
-  margin-top: 10px;
   border-radius: 10px;
-  background: #1b2342;
-  border: 1px solid #a0824a;
+  object-fit: cover;
+  background: #1c2544;
 }
 
-.file-label input {
-  margin-top: 6px;
-}
-
-/* ---------- BUTTONS ---------- */
-
-.button-row {
-  margin-top: 15px;
-  display: flex;
-  gap: 10px;
-}
+/* BUTTONS */
 
 button {
   padding: 10px 16px;
+  border: none;
   background: linear-gradient(135deg, #c49b42, #f4d06f);
   color: #23140a;
-  border: none;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 0.9rem;
   font-weight: 600;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.6);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
 }
 
-button:hover {
-  transform: translateY(-1px);
-}
-
-button:active {
-  transform: translateY(0);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.7);
-}
-
-/* ---------- PREVIEW CANVAS ---------- */
+/* CANVAS */
 
 canvas {
   margin-top: 20px;
-  background: radial-gradient(circle at center, #151b35 0%, #050712 100%);
-  border-radius: 12px;
-  border: 1px solid rgba(214, 191, 130, 0.35);
+  background: #101426;
+  border-radius: 14px;
 }
 
-/* ---------- MODAL ---------- */
+/* MODAL */
 
 .modal.hidden {
   display: none;
@@ -145,160 +118,85 @@ canvas {
 .modal {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top, rgba(9, 8, 20, 0.96), rgba(3, 2, 10, 0.98));
+  background: rgba(8, 8, 15, 0.92);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px;
+  padding: 28px;
   z-index: 999;
 }
 
+/* POPUP 10% SMALLER */
+
 .modal-content {
+  transform: scale(0.9);
+  transform-origin: center;
+  background: #121018;
+  border: 2px solid #a48b5c;
+  border-radius: 14px;
+  padding: 20px 24px;
+  width: 88%;
+  max-width: 1150px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
   position: relative;
-  background:
-    radial-gradient(circle at top left, #2a2420 0%, #151015 35%, #0a0c18 100%);
-  padding: 22px 24px 24px;
-  border-radius: 18px;
-  width: 90%;
-  max-width: 1300px;
-  border: 2px solid rgba(198, 170, 95, 0.8);
-  box-shadow:
-    0 30px 60px rgba(0,0,0,0.9),
-    0 0 40px rgba(120, 199, 255, 0.35);
 }
 
-/* ---------- MODAL HEADER ---------- */
-
-.gov-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(214, 191, 130, 0.5);
-  padding-bottom: 10px;
-  margin-bottom: 12px;
-}
-
-.gov-sigil {
-  width: 45px;
-  height: 45px;
-  border-radius: 999px;
-  border: 2px solid rgba(120, 199, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  color: #f7e7b2;
-  box-shadow: 0 0 10px rgba(120,199,255,0.7);
-}
-
-.gov-titles {
-  display: flex;
-  flex-direction: column;
-}
-
-.gov-title-main {
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 1.2rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #f3e0b5;
-}
-
-.gov-title-sub {
-  font-size: 0.85rem;
-  color: #bfb49b;
-}
-
-.gov-strip {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 6px;
-  margin-bottom: 10px;
-  padding: 6px 12px;
-  background: linear-gradient(90deg, rgba(84, 63, 30, 0.95), rgba(28, 40, 69, 0.95));
-  border-radius: 999px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  border: 1px solid rgba(214, 191, 130, 0.6);
-}
-
-/* ---------- CLOSE BUTTON ---------- */
+/* CLOSE BUTTON */
 
 .close-btn {
   position: absolute;
-  right: 14px;
-  top: 12px;
-  background: #8b1e2f;
-  border: none;
-  border-radius: 999px;
-  color: #fceae0;
-  padding: 4px 10px;
-  font-size: 18px;
+  right: 18px;
+  top: 14px;
+  padding: 6px 12px;
+  background: #751c28;
+  border-radius: 6px;
+  color: #fff1ea;
+  font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 0 12px rgba(139, 30, 47, 0.7);
 }
 
-/* ---------- NEW 3-COLUMN MODAL LAYOUT ---------- */
+/* HEADER */
+
+.gov-header {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(214,191,130,0.45);
+}
+
+.gov-title-main {
+  font-size: 1.4rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f4e6c8;
+}
+
+.gov-title-sub {
+  color: #d5c8ac;
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* 3-COLUMN LAYOUT */
 
 #modalWrapper {
   display: grid;
-  grid-template-columns: 360px 1fr 600px;
-  gap: 26px;
-  margin-top: 16px;
-  align-items: start;
+  grid-template-columns: 330px 1fr 520px;
+  gap: 18px;
+  margin-top: 14px;
 }
 
-/* ---------- LEFT COLUMN (IMAGE) ---------- */
-
-.modal-left {
-  width: 100%;
-}
+/* LEFT IMAGE */
 
 .modal-parchment {
-  position: relative;
-  padding: 18px 16px 16px;
-  border-radius: 14px;
-  background:
-    radial-gradient(circle at top, #f7f0d9 0%, #e3cf97 40%, #c3a56e 75%, #7c6138 100%);
-  box-shadow:
-    0 0 0 1px rgba(60, 40, 22, 0.8),
-    inset 0 0 20px rgba(85, 60, 24, 0.7);
-}
-
-.modal-parchment::before,
-.modal-parchment::after {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border-radius: 10px;
-  border: 1px dashed rgba(90, 60, 25, 0.9);
-  opacity: 0.7;
-}
-
-.wax-seal {
-  position: absolute;
-  top: -12px;
-  right: 18px;
-  width: 36px;
-  height: 36px;
-  border-radius: 999px;
-  background: radial-gradient(circle at top left, #ff8793, #8b1020);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  color: #fff6e0;
-  box-shadow: 0 5px 12px rgba(0,0,0,0.5);
+  background: #e8d8b6;
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.25);
 }
 
 .modal-image-frame {
   border-radius: 10px;
-  padding: 6px;
-  background: linear-gradient(145deg, rgba(30, 25, 60, 0.9), rgba(4, 6, 18, 0.95));
-  border: 1px solid rgba(63, 84, 142, 0.85);
-  box-shadow: 0 0 16px rgba(82, 139, 255, 0.6);
+  border: 2px solid #6b5a3a;
 }
 
 #modalImage {
@@ -307,111 +205,41 @@ canvas {
   object-fit: cover;
 }
 
-/* ---------- CENTER COLUMN (INFO) ---------- */
-
-.modal-center {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
+/* CENTER INFO */
 
 .modal-info-block {
-  width: 100%;
-  max-width: 420px;
-  padding: 14px 16px;
+  background: #ece4cf;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 1rem;
-  color: #30180b;
-  line-height: 1.65rem;
-  border: 1px solid rgba(214, 191, 130, 0.35);
-  box-shadow:
-    inset 0 0 14px rgba(0,0,0,0.3),
-    0 0 20px rgba(120,199,255,0.15);
+  padding: 14px;
+  color: #3c2d17;
+  font-size: 1.05rem;
+  line-height: 1.7rem;
+  border: 1px solid #6d5b3a;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.15);
 }
 
 .modal-info-block .label {
-  font-weight: 700;
+  font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.05em;
   font-size: 0.75rem;
+  color: #5a4120;
   margin-right: 6px;
-  color: #5f3515;
 }
 
-/* ---------- RIGHT COLUMN (CHART) ---------- */
-
-.modal-right {
-  width: 100%;
-  text-align: center;
-}
+/* RIGHT CHART */
 
 .chart-frame {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  background:
-    radial-gradient(circle at top, #151b32 0%, #050711 85%);
-  border: 1px solid rgba(120, 199, 255, 0.7);
-  box-shadow:
-    inset 0 0 28px rgba(68, 110, 190, 0.7),
-    0 0 32px rgba(128, 209, 255, 0.7);
-  position: relative;
+  padding: 12px;
+  background: #1a1f39;
+  border-radius: 12px;
+  border: 1px solid #a48b5c;
 }
 
 .chart-frame-label {
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   text-align: center;
-  color: #dce6ff;
+  color: #f5e7c8;
   margin-bottom: 6px;
-}
-
-/* Runes surrounding chart */
-
-.rune-border-top,
-.rune-border-bottom {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.32em;
-  color: rgba(168, 210, 255, 0.9);
-}
-
-.rune-border-top {
-  top: 10px;
-}
-
-.rune-border-bottom {
-  bottom: 10px;
-}
-
-.download-btn {
-  margin-top: 14px;
-  background: linear-gradient(135deg, #f4c26f, #f18f43);
-}
-
-/* ---------- RESPONSIVENESS ---------- */
-
-@media (max-width: 1180px) {
-  #modalWrapper {
-    grid-template-columns: 300px 1fr 450px;
-  }
-}
-
-@media (max-width: 980px) {
-  #modalWrapper {
-    grid-template-columns: 1fr;
-  }
-  .modal-center {
-    justify-content: flex-start;
-  }
-  .modal-right {
-    margin-top: 20px;
-  }
+  font-size: 0.95rem;
+  text-transform: uppercase;
 }
