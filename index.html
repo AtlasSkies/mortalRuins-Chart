@@ -11,7 +11,7 @@
   <div class="page-container">
     <header>
       <h1>Character Ability Chart</h1>
-      <p class="subtitle">Arcane Nexus // Imperial Registry of Extraordinary Beings</p>
+      <p class="subtitle">Imperial Ruins Archive Registry</p>
     </header>
 
     <main>
@@ -25,24 +25,51 @@
             Name
             <input id="charName" type="text">
           </label>
+
           <label>
             Species
             <input id="charSpecies" type="text">
           </label>
+
           <label>
             Ability
             <input id="charAbility" type="text">
           </label>
 
-          <!-- LEVEL IS AUTO-CALCULATED -->
           <label>
-            Level
-            <input id="charLevel" type="text" readonly>
+            Patron God
+            <select id="charGod">
+              <option>Remora</option>
+              <option>Metrador</option>
+              <option>Jericho</option>
+              <option>Skylar</option>
+              <option>Willow</option>
+              <option>Zane</option>
+              <option>Ormir</option>
+              <option>Echara</option>
+              <option>Phosiris</option>
+              <option>Shakur</option>
+              <option>The Ruins</option>
+              <option>Unknown</option>
+              <option>Dead</option>
+            </select>
           </label>
 
           <label>
             Danger Level
-            <input id="charDanger" type="text">
+            <select id="charDanger">
+              <option>None</option>
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+              <option>Ultra</option>
+            </select>
+          </label>
+
+          <!-- Auto-calculated -->
+          <label>
+            Level
+            <input id="charLevel" type="text" readonly>
           </label>
         </div>
 
@@ -109,19 +136,13 @@
   <!-- MODAL POPUP -->
   <div id="chartModal" class="modal hidden">
     <div class="modal-content">
-      <button id="closeModalBtn" class="close-btn">×</button>
+
+      <!-- X EXIT BUTTON -->
+      <button id="closeModalBtn" class="close-btn">✕</button>
 
       <div class="gov-header">
-        <div class="gov-sigil">⟡</div>
-        <div class="gov-titles">
-          <div class="gov-title-main">Imperial Codex of Arcane Entities</div>
-          <div class="gov-title-sub">Order of the Starbound Seal · Sanctum Archive File</div>
-        </div>
-      </div>
-
-      <div class="gov-strip">
-        <span class="gov-strip-left">CLEARANCE: HIGH COUNCIL // EYES OF THE ARCHMAGE ONLY</span>
-        <span class="gov-strip-right">FILE TYPE: LIVING CONSTELLATION DOSSIER</span>
+        <div class="gov-title-main">Imperial Ruins Archive</div>
+        <div class="gov-title-sub">File Type: <span id="fileTypeGod"></span> Dossier</div>
       </div>
 
       <div id="modalWrapper">
@@ -129,7 +150,6 @@
         <!-- LEFT = IMAGE -->
         <div class="modal-left">
           <div class="modal-parchment">
-            <div class="wax-seal">✶</div>
             <div class="modal-image-frame">
               <img id="modalImage" alt="Character File Image">
             </div>
@@ -138,18 +158,14 @@
 
         <!-- CENTER = INFO TEXT -->
         <div class="modal-center">
-          <div id="modalInfo" class="modal-info-block">
-            <!-- Filled by JS -->
-          </div>
+          <div id="modalInfo" class="modal-info-block"></div>
         </div>
 
         <!-- RIGHT = CHART -->
         <div class="modal-right">
           <div class="chart-frame">
-            <div class="chart-frame-label">ARCANE PROFILE WHEEL</div>
-            <canvas id="modalChartCanvas" width="550" height="550"></canvas>
-            <div class="rune-border-top">ᚨ ᚱ ᚲ ᚾ ᛟ ᛃ ᛋ</div>
-            <div class="rune-border-bottom">ᛞ ᛚ ᚹ ᛇ ᛏ ᛉ ᛜ</div>
+            <div class="chart-frame-label">Ruins Power Wheel</div>
+            <canvas id="modalChartCanvas" width="520" height="520"></canvas>
           </div>
           <button id="modalDownloadBtn" class="download-btn">
             Download Character Chart
