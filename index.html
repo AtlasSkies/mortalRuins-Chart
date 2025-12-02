@@ -1,40 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Character Ability Chart</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
   <div class="page-container">
+
     <header>
       <h1>Character Ability Chart</h1>
     </header>
 
     <main>
+      <!-- LEFT SIDE FORM -->
       <section class="form-section">
+
         <h2>Character Information</h2>
+
         <div class="form-grid">
           <label>
             Name
-            <input type="text" id="charName" />
+            <input id="charName" type="text">
           </label>
           <label>
             Species
-            <input type="text" id="charSpecies" />
+            <input id="charSpecies" type="text">
           </label>
           <label>
             Ability
-            <input type="text" id="charAbility" />
+            <input id="charAbility" type="text">
           </label>
           <label>
             Level
-            <input type="text" id="charLevel" />
+            <input id="charLevel" type="text">
           </label>
           <label>
             Danger Level
-            <input type="text" id="charDanger" />
+            <input id="charDanger" type="text">
           </label>
         </div>
 
@@ -43,56 +47,55 @@
         <div class="form-grid stats-grid">
           <label>
             Overall Rating
-            <input type="number" id="overallRating" min="1" max="10" step="0.1" value="7.5" />
+            <input id="overallRating" type="number" min="1" max="10" step="0.1" value="7.5">
           </label>
-          <label>
-            Energy
-            <input type="number" id="statEnergy" min="1" max="10" step="0.1" value="7" />
+          <label>Energy
+            <input id="statEnergy" type="number" min="1" max="10" step="0.1" value="7">
           </label>
-          <label>
-            Speed
-            <input type="number" id="statSpeed" min="1" max="10" step="0.1" value="6" />
+          <label>Speed
+            <input id="statSpeed" type="number" min="1" max="10" step="0.1" value="6">
           </label>
-          <label>
-            Support
-            <input type="number" id="statSupport" min="1" max="10" step="0.1" value="5" />
+          <label>Support
+            <input id="statSupport" type="number" min="1" max="10" step="0.1" value="5">
           </label>
-          <label>
-            Power
-            <input type="number" id="statPower" min="1" max="10" step="0.1" value="8" />
+          <label>Power
+            <input id="statPower" type="number" min="1" max="10" step="0.1" value="8">
           </label>
-          <label>
-            Intelligence
-            <input type="number" id="statIntelligence" min="1" max="10" step="0.1" value="9" />
+          <label>Intelligence
+            <input id="statIntelligence" type="number" min="1" max="10" step="0.1" value="9">
           </label>
-          <label>
-            Concentration
-            <input type="number" id="statConcentration" min="1" max="10" step="0.1" value="7" />
+          <label>Concentration
+            <input id="statConcentration" type="number" min="1" max="10" step="0.1" value="7">
           </label>
-          <label>
-            Perception
-            <input type="number" id="statPerception" min="1" max="10" step="0.1" value="6" />
+          <label>Perception
+            <input id="statPerception" type="number" min="1" max="10" step="0.1" value="6">
           </label>
         </div>
 
         <h2>Character Image</h2>
+
         <label class="file-label">
           Upload Image
-          <input type="file" id="imageUpload" accept="image/*" />
+          <input type="file" id="imageUpload" accept="image/*">
         </label>
-        <img id="imagePreview" />
+
+        <img id="imagePreview">
 
         <div class="button-row">
           <button id="updateChartBtn">Update Chart</button>
           <button id="downloadChartBtn">Download Character Chart</button>
         </div>
+
       </section>
 
+      <!-- RIGHT SIDE CHART -->
       <section class="chart-section">
         <h2>Chart Preview</h2>
-        <canvas id="fullChartCanvas" width="500" height="500"></canvas>
+        <canvas id="fullChartCanvas" width="550" height="550"></canvas>
       </section>
+
     </main>
+
   </div>
 </body>
 </html>
