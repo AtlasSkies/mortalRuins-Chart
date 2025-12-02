@@ -280,3 +280,138 @@ canvas {
 .wax-seal {
   position: absolute;
   top: -12px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: radial-gradient(circle at top left, #ff8793, #8b1020);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #fff6e0;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.5);
+}
+
+.modal-image-frame {
+  border-radius: 10px;
+  padding: 6px;
+  background: linear-gradient(145deg, rgba(30, 25, 60, 0.9), rgba(4, 6, 18, 0.95));
+  border: 1px solid rgba(63, 84, 142, 0.85);
+  box-shadow: 0 0 16px rgba(82, 139, 255, 0.6);
+}
+
+#modalImage {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* ---------- CENTER COLUMN (INFO) ---------- */
+
+.modal-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.modal-info-block {
+  width: 100%;
+  max-width: 420px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 1rem;
+  color: #30180b;
+  line-height: 1.65rem;
+  border: 1px solid rgba(214, 191, 130, 0.35);
+  box-shadow:
+    inset 0 0 14px rgba(0,0,0,0.3),
+    0 0 20px rgba(120,199,255,0.15);
+}
+
+.modal-info-block .label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  margin-right: 6px;
+  color: #5f3515;
+}
+
+/* ---------- RIGHT COLUMN (CHART) ---------- */
+
+.modal-right {
+  width: 100%;
+  text-align: center;
+}
+
+.chart-frame {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at top, #151b32 0%, #050711 85%);
+  border: 1px solid rgba(120, 199, 255, 0.7);
+  box-shadow:
+    inset 0 0 28px rgba(68, 110, 190, 0.7),
+    0 0 32px rgba(128, 209, 255, 0.7);
+  position: relative;
+}
+
+.chart-frame-label {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #dce6ff;
+  margin-bottom: 6px;
+}
+
+/* Runes surrounding chart */
+
+.rune-border-top,
+.rune-border-bottom {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  color: rgba(168, 210, 255, 0.9);
+}
+
+.rune-border-top {
+  top: 10px;
+}
+
+.rune-border-bottom {
+  bottom: 10px;
+}
+
+.download-btn {
+  margin-top: 14px;
+  background: linear-gradient(135deg, #f4c26f, #f18f43);
+}
+
+/* ---------- RESPONSIVENESS ---------- */
+
+@media (max-width: 1180px) {
+  #modalWrapper {
+    grid-template-columns: 300px 1fr 450px;
+  }
+}
+
+@media (max-width: 980px) {
+  #modalWrapper {
+    grid-template-columns: 1fr;
+  }
+  .modal-center {
+    justify-content: flex-start;
+  }
+  .modal-right {
+    margin-top: 20px;
+  }
+}
