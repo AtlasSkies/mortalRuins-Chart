@@ -42,9 +42,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const fileTypeGod = document.getElementById("fileTypeGod");
   const downloadBtn = document.getElementById("modalDownloadBtn");
 
-  /* --------------------------------------------- */
-  /* IMAGE UPLOAD                                  */
-  /* --------------------------------------------- */
+
+  /* ------------ IMAGE UPLOAD -------------- */
   imageUpload.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -61,9 +60,8 @@ window.addEventListener("DOMContentLoaded", () => {
     reader.readAsDataURL(file);
   });
 
-  /* --------------------------------------------- */
-  /* STATS                                         */
-  /* --------------------------------------------- */
+
+  /* ------------ STATS --------------------- */
   function getStats() {
     return [
       clamp(parseFloat(statInputs.energy.value), 1, 10),
@@ -84,55 +82,8 @@ window.addEventListener("DOMContentLoaded", () => {
     return stats.reduce((a, b) => a + b, 0) + ov * 3;
   }
 
-  /* --------------------------------------------- */
-  /* CURVED LABELS – SLIGHTLY TILTED (OPTION B)    */
-  /* --------------------------------------------- */
-  /**
-   * Draw text curved along an arc segment, slightly rotated (not full tangent).
-   * - text: string
-   * - cx, cy: center
-   * - radius: distance from center
-   * - midAngle: center angle of the wedge
-   * - arcWidth: total angle (radians) that the text is allowed to occupy
-   */
-  function drawCurvedLabel(ctx, text, cx, cy, radius, midAngle, arcWidth) {
-    const chars = text.split("");
-    if (chars.length === 0) return;
 
-    // Use 80% of the available wedge for the text to keep margins
-    const span = arcWidth * 0.8;
-    let step = 0;
-    if (chars.length > 1) {
-      step = span / (chars.length - 1);
-    }
-
-    const startAngle = midAngle - span / 2;
-
-    for (let i = 0; i < chars.length; i++) {
-      const ch = chars[i];
-      const angle = startAngle + i * step;
-
-      const x = cx + radius * Math.cos(angle);
-      const y = cy + radius * Math.sin(angle);
-
-      ctx.save();
-      ctx.translate(x, y);
-
-      // Slight tilt between upright (0) and fully tangential (angle + π/2)
-      const fullTangent = angle + Math.PI / 2;
-      const tiltFactor = 0.35; // 0 = upright, 1 = fully tangent
-      const orientation = fullTangent * tiltFactor;
-
-      ctx.rotate(orientation);
-
-      ctx.fillText(ch, 0, 0);
-      ctx.restore();
-    }
-  }
-
-  /* --------------------------------------------- */
-  /* DRAW CHART                                    */
-  /* --------------------------------------------- */
+  /* ------------ DRAW CHART ---------------- */
   function drawChart(ctx, canvas, stats, overallVal) {
     const w = canvas.width;
     const h = canvas.height;
@@ -153,10 +104,11 @@ window.addEventListener("DOMContentLoaded", () => {
     const rings = 10;
 
     const inner = 60;
-    const outer = 210 * (w / 550); // scale if canvas size changes
+    const outer = 210 * (w / 550);
     const ringT = (outer - inner) / rings;
 
     const secA = (2 * Math.PI) / secCount;
+
 
     /* ---------------- SUNBURST ---------------- */
     for (let i = 0; i < secCount; i++) {
@@ -181,6 +133,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+
     /* -------- INNER CIRCLE -------- */
     ctx.beginPath();
     ctx.arc(cx, cy, inner * 0.45, 0, Math.PI * 2);
@@ -188,28 +141,33 @@ window.addEventListener("DOMContentLoaded", () => {
     ctx.fill();
 
     /* ----------------------------------------- */
-    /* CURVED LABELS (BETWEEN SUNBURST & RING)   */
+    /* NORMAL LABELS (NO OVERLAP)                */
     /* ----------------------------------------- */
 
-    // Place labels in the gap just outside sunburst, before the outer ring
-    const labelRadius = outer + 15; // inside ringIn (which we'll set later)
+    const labelRadius = outer + 15; 
 
     ctx.fillStyle = "#3b2e1d";
-    ctx.font = "13px Georgia, serif";
+    ctx.font = "14px Georgia, serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
     for (let i = 0; i < secCount; i++) {
       const midAngle = -Math.PI / 2 + secA * (i + 0.5);
-      drawCurvedLabel(ctx, labels[i], cx, cy, labelRadius, midAngle, secA);
+
+      const lx = cx + Math.cos(midAngle) * labelRadius;
+      const ly = cy + Math.sin(midAngle) * labelRadius;
+
+      ctx.fillText(labels[i], lx, ly);
     }
 
-    /* ---------------- OUTER RING ---------------- */
+    /* ----------------------------------------- */
+    /* OUTER RING (OVERALL RATING)               */
+    /* ----------------------------------------- */
+
     const ringIn = outer + 40;
     const ringOut = outer + 90;
     const wedgeA = (2 * Math.PI) / 10;
 
-    // base ring
     ctx.beginPath();
     ctx.arc(cx, cy, ringOut, 0, Math.PI * 2);
     ctx.arc(cx, cy, ringIn, Math.PI * 2, 0, true);
@@ -232,6 +190,7 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.arc(cx, cy, ringOut, a0, a1);
       ctx.arc(cx, cy, ringIn, a1, a0, true);
       ctx.closePath();
+
       ctx.fillStyle = wedgeColor(i);
       ctx.fill();
     }
@@ -245,14 +204,15 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.arc(cx, cy, ringOut, a0, a1);
       ctx.arc(cx, cy, ringIn, a1, a0, true);
       ctx.closePath();
+
       ctx.fillStyle = wedgeColor(i);
       ctx.fill();
     }
+
   }
 
-  /* --------------------------------------------- */
-  /* AUTO UPDATE                                   */
-  /* --------------------------------------------- */
+
+  /* ------------ AUTO UPDATE ---------------- */
   function updatePreview() {
     const stats = getStats();
     const ov = getOverall();
@@ -263,12 +223,10 @@ window.addEventListener("DOMContentLoaded", () => {
   Object.values(statInputs).forEach(i => i.addEventListener("input", updatePreview));
   overall.addEventListener("input", updatePreview);
 
-  // initial draw
   updatePreview();
 
-  /* --------------------------------------------- */
-  /* OPEN POPUP                                    */
-  /* --------------------------------------------- */
+
+  /* ------------ OPEN POPUP ---------------- */
   viewBtn.addEventListener("click", () => {
     const stats = getStats();
     const ov = getOverall();
@@ -294,16 +252,14 @@ window.addEventListener("DOMContentLoaded", () => {
     modal.classList.remove("hidden");
   });
 
-  /* --------------------------------------------- */
-  /* CLOSE POPUP                                   */
-  /* --------------------------------------------- */
+
+  /* ------------ CLOSE POPUP ---------------- */
   closeBtn.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
-  /* --------------------------------------------- */
-  /* DOWNLOAD                                      */
-  /* --------------------------------------------- */
+
+  /* ------------ DOWNLOAD ---------------- */
   downloadBtn.addEventListener("click", () => {
 
     const wrap = document.getElementById("modalWrapper");
@@ -316,27 +272,4 @@ window.addEventListener("DOMContentLoaded", () => {
     const tctx = tmp.getContext("2d");
     tctx.scale(2, 2);
 
-    tctx.fillStyle = "#ffffff";
-    tctx.fillRect(0, 0, rect.width, rect.height);
-
-    if (uploadedImage) {
-      tctx.drawImage(modalImage, 10, 10, 300, 300);
-    }
-
-    tctx.fillStyle = "#000";
-    tctx.font = "18px Georgia";
-    let y = 330;
-    modalInfo.innerText.split("\n").forEach(line => {
-      tctx.fillText(line, 10, y);
-      y += 26;
-    });
-
-    tctx.drawImage(modalCanvas, 350, 10);
-
-    const name = (charName.value || "character").replace(/\s+/g, "");
-    const link = document.createElement("a");
-    link.download = `${name}_mr_characterchart.png`;
-    link.href = tmp.toDataURL();
-    link.click();
-  });
-});
+    tctx.fillStyle = "#ff
