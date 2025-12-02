@@ -10,7 +10,6 @@
   <div class="page-container">
     <header>
       <h1>Character Ability Chart</h1>
-      <p>Enter your character info, stats (1–10, one decimal allowed), upload an image, and generate a chart.</p>
     </header>
 
     <main>
@@ -19,124 +18,81 @@
         <div class="form-grid">
           <label>
             Name
-            <input type="text" id="charName" placeholder="Character Name" />
+            <input type="text" id="charName" />
           </label>
           <label>
             Species
-            <input type="text" id="charSpecies" placeholder="Species" />
+            <input type="text" id="charSpecies" />
           </label>
           <label>
             Ability
-            <input type="text" id="charAbility" placeholder="Main Ability" />
+            <input type="text" id="charAbility" />
           </label>
           <label>
             Level
-            <input type="text" id="charLevel" placeholder="Level" />
+            <input type="text" id="charLevel" />
           </label>
           <label>
             Danger Level
-            <input type="text" id="charDanger" placeholder="Danger Level" />
+            <input type="text" id="charDanger" />
           </label>
         </div>
 
-        <h2>Stats</h2>
-        <p class="hint">All stats: 1.0 – 10.0 (step of 0.1).</p>
+        <h2>Stats (1–10)</h2>
 
         <div class="form-grid stats-grid">
           <label>
-            Overall Rating (outer ring)
+            Overall Rating
             <input type="number" id="overallRating" min="1" max="10" step="0.1" value="7.5" />
           </label>
           <label>
-            Energy (red)
-            <input type="number" id="statEnergy" min="1" max="10" step="0.1" value="6.5" />
+            Energy
+            <input type="number" id="statEnergy" min="1" max="10" step="0.1" value="7" />
           </label>
           <label>
-            Speed (orange)
-            <input type="number" id="statSpeed" min="1" max="10" step="0.1" value="7.0" />
+            Speed
+            <input type="number" id="statSpeed" min="1" max="10" step="0.1" value="6" />
           </label>
           <label>
-            Support (yellow)
-            <input type="number" id="statSupport" min="1" max="10" step="0.1" value="5.0" />
+            Support
+            <input type="number" id="statSupport" min="1" max="10" step="0.1" value="5" />
           </label>
           <label>
-            Power (green)
-            <input type="number" id="statPower" min="1" max="10" step="0.1" value="8.0" />
+            Power
+            <input type="number" id="statPower" min="1" max="10" step="0.1" value="8" />
           </label>
           <label>
-            Intelligence (blue)
-            <input type="number" id="statIntelligence" min="1" max="10" step="0.1" value="9.0" />
+            Intelligence
+            <input type="number" id="statIntelligence" min="1" max="10" step="0.1" value="9" />
           </label>
           <label>
-            Concentration (indigo)
-            <input type="number" id="statConcentration" min="1" max="10" step="0.1" value="7.5" />
+            Concentration
+            <input type="number" id="statConcentration" min="1" max="10" step="0.1" value="7" />
           </label>
           <label>
-            Perception (purple)
-            <input type="number" id="statPerception" min="1" max="10" step="0.1" value="6.0" />
+            Perception
+            <input type="number" id="statPerception" min="1" max="10" step="0.1" value="6" />
           </label>
         </div>
 
         <h2>Character Image</h2>
-        <div class="upload-row">
-          <label class="file-label">
-            Upload Image
-            <input type="file" id="imageUpload" accept="image/*" />
-          </label>
-          <div class="image-preview-wrapper">
-            <span class="preview-label">Preview</span>
-            <img id="imagePreview" alt="Character Preview" />
-          </div>
-        </div>
+        <label class="file-label">
+          Upload Image
+          <input type="file" id="imageUpload" accept="image/*" />
+        </label>
+        <img id="imagePreview" />
 
         <div class="button-row">
-          <button type="button" id="updateChartBtn">Update Chart</button>
-          <button type="button" id="downloadChartBtn">Download Character Chart</button>
+          <button id="updateChartBtn">Update Chart</button>
+          <button id="downloadChartBtn">Download Character Chart</button>
         </div>
       </section>
 
       <section class="chart-section">
-        <h2>Charts</h2>
-        <div class="charts-wrapper">
-          <div class="chart-card">
-            <h3>Overall Rating Ring</h3>
-            <canvas id="ringCanvas" width="400" height="400"></canvas>
-          </div>
-
-          <div class="chart-card">
-            <h3>Ability Sunburst</h3>
-            <canvas id="sunburstCanvas" width="400" height="400"></canvas>
-          </div>
-        </div>
+        <h2>Chart Preview</h2>
+        <canvas id="fullChartCanvas" width="500" height="500"></canvas>
       </section>
     </main>
-  </div>
-
-  <!-- Modal -->
-  <div id="chartModal" class="modal hidden">
-    <div class="modal-backdrop"></div>
-    <div class="modal-content">
-      <button class="modal-close" id="closeModalBtn">&times;</button>
-      <div class="modal-layout">
-        <div class="modal-left">
-          <h2 id="modalCharName">Character Name</h2>
-          <p id="modalCharInfo"></p>
-          <div class="modal-image-wrapper">
-            <img id="modalImagePreview" alt="Character" />
-          </div>
-        </div>
-        <div class="modal-right">
-          <h3>Character Chart</h3>
-          <div class="modal-charts">
-            <!-- Re-use the same canvases visually -->
-            <canvas id="ringCanvasClone" width="400" height="400"></canvas>
-            <canvas id="sunburstCanvasClone" width="400" height="400"></canvas>
-          </div>
-          <button type="button" id="savePngBtn">Save as PNG</button>
-          <a id="downloadLink" download="character-chart.png" class="hidden"></a>
-        </div>
-      </div>
-    </div>
   </div>
 </body>
 </html>
