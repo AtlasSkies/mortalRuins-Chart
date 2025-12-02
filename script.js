@@ -85,28 +85,49 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   /* --------------------------------------------- */
-  /* ARC-ALIGNED TEXT FUNCTION                     */
+  /* CURVED LABELS – SLIGHTLY TILTED (OPTION B)    */
   /* --------------------------------------------- */
-  function drawTextAlongArc(ctx, text, cx, cy, radius, startAngle) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.rotate(startAngle);
-
+  /**
+   * Draw text curved along an arc segment, slightly rotated (not full tangent).
+   * - text: string
+   * - cx, cy: center
+   * - radius: distance from center
+   * - midAngle: center angle of the wedge
+   * - arcWidth: total angle (radians) that the text is allowed to occupy
+   */
+  function drawCurvedLabel(ctx, text, cx, cy, radius, midAngle, arcWidth) {
     const chars = text.split("");
-    const angleStep = (8 * Math.PI / 180); // spacing per character
+    if (chars.length === 0) return;
 
-    ctx.rotate(-angleStep * (chars.length - 1) / 2);
-
-    for (let i = 0; i < chars.length; i++) {
-      ctx.save();
-      ctx.translate(0, -radius);
-      ctx.rotate(Math.PI / 2);
-      ctx.fillText(chars[i], 0, 0);
-      ctx.restore();
-      ctx.rotate(angleStep);
+    // Use 80% of the available wedge for the text to keep margins
+    const span = arcWidth * 0.8;
+    let step = 0;
+    if (chars.length > 1) {
+      step = span / (chars.length - 1);
     }
 
-    ctx.restore();
+    const startAngle = midAngle - span / 2;
+
+    for (let i = 0; i < chars.length; i++) {
+      const ch = chars[i];
+      const angle = startAngle + i * step;
+
+      const x = cx + radius * Math.cos(angle);
+      const y = cy + radius * Math.sin(angle);
+
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Slight tilt between upright (0) and fully tangential (angle + π/2)
+      const fullTangent = angle + Math.PI / 2;
+      const tiltFactor = 0.35; // 0 = upright, 1 = fully tangent
+      const orientation = fullTangent * tiltFactor;
+
+      ctx.rotate(orientation);
+
+      ctx.fillText(ch, 0, 0);
+      ctx.restore();
+    }
   }
 
   /* --------------------------------------------- */
@@ -132,7 +153,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const rings = 10;
 
     const inner = 60;
-    const outer = 210 * (w / 550);
+    const outer = 210 * (w / 550); // scale if canvas size changes
     const ringT = (outer - inner) / rings;
 
     const secA = (2 * Math.PI) / secCount;
@@ -163,31 +184,24 @@ window.addEventListener("DOMContentLoaded", () => {
     /* -------- INNER CIRCLE -------- */
     ctx.beginPath();
     ctx.arc(cx, cy, inner * 0.45, 0, Math.PI * 2);
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#ffffff";
     ctx.fill();
 
     /* ----------------------------------------- */
-    /* ARC-ALIGNED LABELS BETWEEN CHART & RING   */
+    /* CURVED LABELS (BETWEEN SUNBURST & RING)   */
     /* ----------------------------------------- */
 
-    const labelRadius = inner + (outer - inner) * 1.18;
+    // Place labels in the gap just outside sunburst, before the outer ring
+    const labelRadius = outer + 15; // inside ringIn (which we'll set later)
 
     ctx.fillStyle = "#3b2e1d";
-    ctx.font = "14px Georgia, serif";
+    ctx.font = "13px Georgia, serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
     for (let i = 0; i < secCount; i++) {
       const midAngle = -Math.PI / 2 + secA * (i + 0.5);
-
-      drawTextAlongArc(
-        ctx,
-        labels[i],
-        cx,
-        cy,
-        labelRadius,
-        midAngle
-      );
+      drawCurvedLabel(ctx, labels[i], cx, cy, labelRadius, midAngle, secA);
     }
 
     /* ---------------- OUTER RING ---------------- */
@@ -195,7 +209,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const ringOut = outer + 90;
     const wedgeA = (2 * Math.PI) / 10;
 
-    /* Base ring */
+    // base ring
     ctx.beginPath();
     ctx.arc(cx, cy, ringOut, 0, Math.PI * 2);
     ctx.arc(cx, cy, ringIn, Math.PI * 2, 0, true);
@@ -222,7 +236,7 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.fill();
     }
 
-    if (frac > 0) {
+    if (frac > 0 && full < 10) {
       const i = full;
       const a0 = -Math.PI / 2 + i * wedgeA;
       const a1 = a0 + wedgeA * frac;
@@ -249,6 +263,7 @@ window.addEventListener("DOMContentLoaded", () => {
   Object.values(statInputs).forEach(i => i.addEventListener("input", updatePreview));
   overall.addEventListener("input", updatePreview);
 
+  // initial draw
   updatePreview();
 
   /* --------------------------------------------- */
