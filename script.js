@@ -85,9 +85,10 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   /* --------------------------------------------- */
-  /* DRAW CHART                                    */
+  /* RESTORED DRAW CHART — ORIGINAL WORKING VERSION */
   /* --------------------------------------------- */
   function drawChart(ctx, canvas, stats, overallVal) {
+
     const w = canvas.width;
     const h = canvas.height;
     const cx = w / 2;
@@ -106,14 +107,198 @@ window.addEventListener("DOMContentLoaded", () => {
     const secCount = 7;
     const rings = 10;
 
-    const inner = 55;
-    const outer = 170; 
+    const inner = 60;
+    const outer = 210 * (w / 550);  
     const ringT = (outer - inner) / rings;
 
     const secA = (2 * Math.PI) / secCount;
 
+    /* ---------------- SUNBURST (restored) ---------------- */
+    for (let i = 0; i < secCount; i++) {
 
-    /* --------------------------------------------- */
-    /* SUNBURST                                      */
-    /* --------------------------------------------- */
-    for (let i = 0; i < secCount;
+      const a0 = -Math.PI / 2 + i * secA;
+      const a1 = a0 + secA;
+      const val = stats[i];
+      const hue = hues[i];
+
+      for (let r = 0; r < val; r++) {
+        const rIn = inner + r * ringT;
+        const rOut = rIn + ringT;
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, rOut, a0, a1);
+        ctx.arc(cx, cy, rIn, a1, a0, true);
+        ctx.closePath();
+
+        ctx.fillStyle = `hsl(${hue}, ${40 + r * 5}%, ${70 - r * 4}%)`;
+        ctx.fill();
+      }
+    }
+
+    /* INNER DISC */
+    ctx.beginPath();
+    ctx.arc(cx, cy, inner * 0.45, 0, Math.PI * 2);
+    ctx.fillStyle = "#fff";
+    ctx.fill();
+
+    /* ----------------------------------------- */
+    /* NORMAL LABELS — MEDIUM SPACING (SAFE)     */
+    /* ----------------------------------------- */
+
+    const labelRadius = outer + 20;  
+
+    ctx.fillStyle = "#3b2e1d";
+    ctx.font = "14px Georgia, serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    for (let i = 0; i < secCount; i++) {
+
+      const midAngle = -Math.PI / 2 + secA * (i + 0.5);
+
+      const lx = cx + Math.cos(midAngle) * labelRadius;
+      const ly = cy + Math.sin(midAngle) * labelRadius;
+
+      ctx.fillText(labels[i], lx, ly);
+    }
+
+    /* ----------------------------------------- */
+    /* OUTER RATING RING (restored & working)    */
+    /* ----------------------------------------- */
+
+    const ringIn = outer + 40;
+    const ringOut = outer + 80;
+    const wedgeA = (2 * Math.PI) / 10;
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, ringOut, 0, Math.PI * 2);
+    ctx.arc(cx, cy, ringIn, Math.PI * 2, 0, true);
+    ctx.closePath();
+    ctx.fillStyle = "#fff";
+    ctx.fill();
+
+    const full = Math.floor(overallVal);
+    const frac = overallVal - full;
+
+    function wedgeColor(i) {
+      return `hsl(220, 30%, ${70 - i * 4}%)`;
+    }
+
+    for (let i = 0; i < full; i++) {
+      const a0 = -Math.PI / 2 + i * wedgeA;
+      const a1 = a0 + wedgeA;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, ringOut, a0, a1);
+      ctx.arc(cx, cy, ringIn, a1, a0, true);
+      ctx.closePath();
+      ctx.fillStyle = wedgeColor(i);
+      ctx.fill();
+    }
+
+    if (frac > 0) {
+      const i = full;
+      const a0 = -Math.PI / 2 + i * wedgeA;
+      const a1 = a0 + wedgeA * frac;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, ringOut, a0, a1);
+      ctx.arc(cx, cy, ringIn, a1, a0, true);
+      ctx.closePath();
+      ctx.fillStyle = wedgeColor(i);
+      ctx.fill();
+    }
+  }
+
+  /* --------------------------------------------- */
+  /* AUTO UPDATE                                   */
+  /* --------------------------------------------- */
+  function updatePreview() {
+    const stats = getStats();
+    const ov = getOverall();
+    charLevel.value = computeLevel(stats, ov).toFixed(1);
+
+    drawChart(previewCtx, previewCanvas, stats, ov);
+  }
+
+  Object.values(statInputs).forEach(x => x.addEventListener("input", updatePreview));
+  overall.addEventListener("input", updatePreview);
+
+  updatePreview();
+
+  /* --------------------------------------------- */
+  /* OPEN POPUP                                    */
+  /* --------------------------------------------- */
+  viewBtn.addEventListener("click", () => {
+
+    const stats = getStats();
+    const ov = getOverall();
+    const lvl = computeLevel(stats, ov);
+
+    charLevel.value = lvl.toFixed(1);
+    fileTypeGod.textContent = charGod.value;
+
+    modalImage.src = uploadedImage ? uploadedImage.src : "";
+
+    modalInfo.innerHTML = `
+      <div><span class="label">Name:</span> ${charName.value || "Unknown"}</div>
+      <div><span class="label">Species:</span> ${charSpecies.value || "Unknown"}</div>
+      <div><span class="label">Ability:</span> ${charAbility.value || "Unknown"}</div>
+      <div><span class="label">Patron God:</span> ${charGod.value}</div>
+      <div><span class="label">Danger Level:</span> ${charDanger.value}</div>
+      <div><span class="label">Level Index:</span> ${lvl.toFixed(1)}</div>
+      <div><span class="label">[Redacted]:</span> ${ov.toFixed(1)}</div>
+    `;
+
+    drawChart(modalCtx, modalCanvas, stats, ov);
+
+    modal.classList.remove("hidden");
+  });
+
+  /* --------------------------------------------- */
+  /* CLOSE POPUP                                    */
+  /* --------------------------------------------- */
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  /* --------------------------------------------- */
+  /* DOWNLOAD                                       */
+  /* --------------------------------------------- */
+  downloadBtn.addEventListener("click", () => {
+
+    const wrap = document.getElementById("modalWrapper");
+    const rect = wrap.getBoundingClientRect();
+
+    const tmp = document.createElement("canvas");
+    tmp.width = rect.width * 2;
+    tmp.height = rect.height * 2;
+
+    const tctx = tmp.getContext("2d");
+    tctx.scale(2, 2);
+
+    tctx.fillStyle = "#ffffff";
+    tctx.fillRect(0, 0, rect.width, rect.height);
+
+    if (uploadedImage) {
+      tctx.drawImage(modalImage, 10, 10, 300, 300);
+    }
+
+    tctx.fillStyle = "#000";
+    tctx.font = "18px Georgia";
+    let y = 330;
+    modalInfo.innerText.split("\n").forEach(line => {
+      tctx.fillText(line, 10, y);
+      y += 26;
+    });
+
+    tctx.drawImage(modalCanvas, 350, 10);
+
+    const name = (charName.value || "character").replace(/\s+/g, "");
+    const link = document.createElement("a");
+    link.download = `${name}_mr_characterchart.png`;
+    link.href = tmp.toDataURL();
+    link.click();
+  });
+
+});
