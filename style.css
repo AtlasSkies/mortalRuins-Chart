@@ -117,7 +117,6 @@ select:focus {
   border-radius: 10px;
 }
 
-/* Buttons */
 button {
   padding: 10px 16px;
   border: none;
@@ -132,7 +131,6 @@ button:hover {
   background: linear-gradient(135deg,#f0dcb5,#ffeccf);
 }
 
-/* Chart canvas */
 canvas {
   margin-top: 20px;
   background: #ffffff;
@@ -140,7 +138,6 @@ canvas {
   border-radius: 12px;
 }
 
-/* Modal */
 .modal.hidden {
   display: none;
 }
@@ -177,7 +174,6 @@ canvas {
   cursor: pointer;
 }
 
-/* Popup layout */
 #modalWrapper {
   display: grid;
   grid-template-columns: 330px 1fr 400px;
@@ -212,15 +208,4 @@ canvas {
   margin-bottom: 6px;
   font-weight: bold;
   color: #4d3a26;
-}
-
-.file-label {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.button-row {
-  margin-top: 12px;
 }
