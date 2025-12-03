@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   /* --------------------------------------------- */
-  /* DRAW CHART (SUNBURST + RING TOUCHING)         */
+  /* DRAW CHART (CENTER COLOR UPDATED)             */
   /* --------------------------------------------- */
   function drawChart(ctx, canvas, stats, overallVal) {
 
@@ -126,7 +126,6 @@ window.addEventListener("DOMContentLoaded", () => {
     const ringScale = 0.85;
 
     const maxRadius = (w / 2) * sunburstScale;
-
     const inner = 0;
     const outer = maxRadius * 0.78;
     const ringT = (outer - inner) / rings;
@@ -157,19 +156,20 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    /* CENTER CIRCLE */
+    /* CENTER CIRCLE (UPDATED COLOR) */
     ctx.beginPath();
     ctx.arc(cx, cy, outer * 0.12, 0, Math.PI * 2);
-    ctx.fillStyle = "#ffffff";
+
+    // Unsaturated ancient parchment tone
+    ctx.fillStyle = "hsl(40, 10%, 88%)";
+
     ctx.fill();
 
-    /* OUTER RING TOUCHING SUNBURST */
+    /* OUTER RING */
     const ringGap = 0;
     const baseRingThickness = 30 * ringScale;
-
     const ringIn = outer + ringGap;
     const ringOut = ringIn + baseRingThickness;
-
     const wedgeA = (2 * Math.PI) / 10;
 
     /* BACKGROUND RING */
@@ -200,7 +200,7 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.fill();
     }
 
-    /* PARTIAL WEDGE */
+    /* FRACTIONAL WEDGE */
     if (frac > 0) {
       const i = full;
       const a0 = -Math.PI / 2 + i * wedgeA;
@@ -228,9 +228,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   updatePreview();
 
-  /* --------------------------------------------- */
-  /* OPEN POPUP                                    */
-  /* --------------------------------------------- */
+  /* OPEN POPUP */
   viewBtn.addEventListener("click", () => {
     const stats = getStats();
     const ov = getOverall();
@@ -260,9 +258,7 @@ window.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  /* --------------------------------------------------- */
-  /* DOWNLOAD EXACT POPUP VIEW (no X button or DL button) */
-  /* --------------------------------------------------- */
+  /* DOWNLOAD EXACT POPUP (NO BUTTONS) */
   downloadBtn.addEventListener("click", async () => {
 
     const modalContent = document.querySelector(".modal-content");
@@ -281,7 +277,7 @@ window.addEventListener("DOMContentLoaded", () => {
       scale: 2
     }).then(canvas => {
 
-      // Restore buttons
+      // Restore UI
       closeBtn.style.display = "";
       dlBtn.style.display = "";
 
