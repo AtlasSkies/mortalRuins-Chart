@@ -1,3 +1,4 @@
+// script.js
 function clamp(v, min, max) {
   return Math.min(max, Math.max(min, v));
 }
@@ -16,14 +17,19 @@ window.addEventListener("DOMContentLoaded", () => {
   const imagePreview = document.getElementById("imagePreview");
 
   const charName = document.getElementById("charName");
-  const charIdLetters = document.getElementById("charIdLetters");
-  const charIdNumbers = document.getElementById("charIdNumbers");
-
   const charSpecies = document.getElementById("charSpecies");
   const charAbility = document.getElementById("charAbility");
   const charGod = document.getElementById("charGod");
   const charDanger = document.getElementById("charDanger");
   const charLevel = document.getElementById("charLevel");
+
+  // Redact checkboxes
+  const redactName = document.getElementById("redactName");
+  const redactSpecies = document.getElementById("redactSpecies");
+  const redactAbility = document.getElementById("redactAbility");
+  const redactGod = document.getElementById("redactGod");
+  const redactDanger = document.getElementById("redactDanger");
+  const redactLevel = document.getElementById("redactLevel");
 
   const overall = document.getElementById("redacted");
 
@@ -45,9 +51,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const fileTypeGod = document.getElementById("fileTypeGod");
   const downloadBtn = document.getElementById("modalDownloadBtn");
 
-  /* --------------------------------------------- */
-  /* IMAGE UPLOAD                                  */
-  /* --------------------------------------------- */
+  /* IMAGE UPLOAD */
   imageUpload.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -64,29 +68,7 @@ window.addEventListener("DOMContentLoaded", () => {
     reader.readAsDataURL(file);
   });
 
-  /* --------------------------------------------- */
-  /* CHARACTER ID HANDLING                         */
-  /* --------------------------------------------- */
-  charIdLetters.addEventListener("input", () => {
-    charIdLetters.value = charIdLetters.value.replace(/[^A-Za-z]/g, "").toUpperCase();
-  });
-
-  charIdNumbers.addEventListener("input", () => {
-    charIdNumbers.value = charIdNumbers.value.replace(/[^0-9]/g, "");
-  });
-
-  function getCharacterID() {
-    const letters = charIdLetters.value;
-    const numbers = charIdNumbers.value;
-    if (letters.length === 3 && numbers.length === 9) {
-      return `${letters}-${numbers}`;
-    }
-    return "Unknown";
-  }
-
-  /* --------------------------------------------- */
-  /* STATS                                         */
-  /* --------------------------------------------- */
+  /* STATS */
   function getStats() {
     return [
       clamp(parseFloat(statInputs.energy.value), 1, 10),
@@ -107,9 +89,7 @@ window.addEventListener("DOMContentLoaded", () => {
     return stats.reduce((a, b) => a + b, 0) + ov * 3;
   }
 
-  /* --------------------------------------------- */
-  /* DRAW CHART (SUNBURST + RING TOUCHING)         */
-  /* --------------------------------------------- */
+  /* DRAW CHART */
   function drawChart(ctx, canvas, stats, overallVal) {
 
     const w = canvas.width;
@@ -126,7 +106,6 @@ window.addEventListener("DOMContentLoaded", () => {
     const ringScale = 0.85;
 
     const maxRadius = (w / 2) * sunburstScale;
-
     const inner = 0;
     const outer = maxRadius * 0.78;
     const ringT = (outer - inner) / rings;
@@ -134,7 +113,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const secA = (2 * Math.PI) / secCount;
     const hues = [0, 30, 55, 130, 210, 255, 280];
 
-    /* SUNBURST SECTIONS */
+    // SUNBURST
     for (let i = 0; i < secCount; i++) {
 
       const a0 = -Math.PI / 2 + i * secA;
@@ -157,22 +136,20 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    /* CENTER CIRCLE */
+    // CENTER (unsaturated tone)
     ctx.beginPath();
     ctx.arc(cx, cy, outer * 0.12, 0, Math.PI * 2);
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = "hsl(40, 10%, 88%)";
     ctx.fill();
 
-    /* OUTER RING TOUCHING SUNBURST */
+    // OUTER RING
     const ringGap = 0;
     const baseRingThickness = 30 * ringScale;
-
     const ringIn = outer + ringGap;
     const ringOut = ringIn + baseRingThickness;
-
     const wedgeA = (2 * Math.PI) / 10;
 
-    /* BACKGROUND RING */
+    // Background ring
     ctx.beginPath();
     ctx.arc(cx, cy, ringOut, 0, Math.PI * 2);
     ctx.arc(cx, cy, ringIn, Math.PI * 2, 0, true);
@@ -187,7 +164,7 @@ window.addEventListener("DOMContentLoaded", () => {
       return `hsl(220, 30%, ${70 - i * 4}%)`;
     }
 
-    /* FULL WEDGES */
+    // Full wedges
     for (let i = 0; i < full; i++) {
       const a0 = -Math.PI / 2 + i * wedgeA;
       const a1 = a0 + wedgeA;
@@ -200,7 +177,7 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.fill();
     }
 
-    /* PARTIAL WEDGE */
+    // Fractional wedge
     if (frac > 0) {
       const i = full;
       const a0 = -Math.PI / 2 + i * wedgeA;
@@ -228,9 +205,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
   updatePreview();
 
-  /* --------------------------------------------- */
-  /* OPEN POPUP                                    */
-  /* --------------------------------------------- */
+  /* HELPER: redactable line */
+  function censoredOrValue(checkbox, value, fallback = "Unknown") {
+    if (checkbox && checkbox.checked) {
+      return "████████████████";
+    }
+    return value || fallback;
+  }
+
+  /* OPEN POPUP */
   viewBtn.addEventListener("click", () => {
     const stats = getStats();
     const ov = getOverall();
@@ -241,14 +224,32 @@ window.addEventListener("DOMContentLoaded", () => {
 
     modalImage.src = uploadedImage ? uploadedImage.src : "";
 
-    modalInfo.innerHTML =
-      `<div><span class="label">Name:</span> ${charName.value || "Unknown"}</div>
-       <div><span class="label">Character ID:</span> ${getCharacterID()}</div>
-       <div><span class="label">Species:</span> ${charSpecies.value || "Unknown"}</div>
-       <div><span class="label">Ability:</span> ${charAbility.value || "Unknown"}</div>
-       <div><span class="label">Patron God:</span> ${charGod.value}</div>
-       <div><span class="label">Danger Level:</span> ${charDanger.value}</div>
-       <div><span class="label">Level Index:</span> ${lvl.toFixed(1)}</div>`;
+    const statLabels = [
+      "Energy",
+      "Speed",
+      "Support",
+      "Power",
+      "Intelligence",
+      "Concentration",
+      "Perception"
+    ];
+
+    let infoHTML = "";
+
+    infoHTML += `<div><span class="label">Name:</span> ${censoredOrValue(redactName, charName.value)}</div>`;
+    infoHTML += `<div><span class="label">Species:</span> ${censoredOrValue(redactSpecies, charSpecies.value)}</div>`;
+    infoHTML += `<div><span class="label">Ability:</span> ${censoredOrValue(redactAbility, charAbility.value)}</div>`;
+    infoHTML += `<div><span class="label">Patron God:</span> ${censoredOrValue(redactGod, charGod.value)}</div>`;
+    infoHTML += `<div><span class="label">Danger Level:</span> ${censoredOrValue(redactDanger, charDanger.value)}</div>`;
+    infoHTML += `<div><span class="label">Level Index:</span> ${censoredOrValue(redactLevel, lvl.toFixed(1), "0.0")}</div>`;
+
+    // Stats section (no label for [Redacted] stat, only the others)
+    infoHTML += `<div class="label-group-title">Ability Metrics</div>`;
+    stats.forEach((val, idx) => {
+      infoHTML += `<div><span class="label">${statLabels[idx]}:</span> ${val.toFixed(1)}</div>`;
+    });
+
+    modalInfo.innerHTML = infoHTML;
 
     drawChart(modalCtx, modalCanvas, stats, ov);
 
@@ -260,20 +261,17 @@ window.addEventListener("DOMContentLoaded", () => {
     modal.classList.add("hidden");
   });
 
-  /* --------------------------------------------------- */
-  /* DOWNLOAD EXACT POPUP VIEW (no X button or DL button) */
-  /* --------------------------------------------------- */
+  /* DOWNLOAD EXACT POPUP (NO BUTTONS) */
   downloadBtn.addEventListener("click", async () => {
 
     const modalContent = document.querySelector(".modal-content");
     const closeBtn = document.getElementById("closeModalBtn");
     const dlBtn = document.getElementById("modalDownloadBtn");
 
-    // Hide UI elements
+    // Hide buttons
     closeBtn.style.display = "none";
     dlBtn.style.display = "none";
 
-    // Let layout update
     await new Promise(r => setTimeout(r, 50));
 
     html2canvas(modalContent, {
@@ -285,7 +283,6 @@ window.addEventListener("DOMContentLoaded", () => {
       closeBtn.style.display = "";
       dlBtn.style.display = "";
 
-      // Download
       const name = (charName.value || "character").replace(/\s+/g, "");
       const link = document.createElement("a");
       link.download = `${name}_mr_characterchart.png`;
