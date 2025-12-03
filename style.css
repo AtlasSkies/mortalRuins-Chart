@@ -1,5 +1,3 @@
-/* GLOBAL — white parchment theme */
-
 body {
   margin: 0;
   background: #f8f2e7;
@@ -12,8 +10,6 @@ body {
   margin: auto;
   padding: 20px;
 }
-
-/* HEADER */
 
 header h1 {
   text-align: center;
@@ -28,14 +24,10 @@ header h1 {
   color: #6e5438;
 }
 
-/* MAIN LAYOUT */
-
 main {
   display: flex;
   gap: 20px;
 }
-
-/* FORM + CHART PANELS */
 
 .form-section,
 .chart-section {
@@ -51,8 +43,6 @@ main {
   text-align: center;
 }
 
-/* GRID */
-
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
@@ -64,8 +54,6 @@ label {
   flex-direction: column;
   font-size: 0.95rem;
 }
-
-/* ID ROW */
 
 .id-row {
   display: flex;
@@ -83,9 +71,8 @@ label {
   opacity: 0.9;
 }
 
-/* INPUTS */
-
-input, select {
+input,
+select {
   padding: 8px;
   border-radius: 6px;
   background: #fff8ee;
@@ -94,12 +81,11 @@ input, select {
   font-size: 0.9rem;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: #a47a44;
 }
-
-/* IMAGE PREVIEW */
 
 #imagePreview {
   width: 140px;
@@ -109,8 +95,6 @@ input:focus, select:focus {
   border: 2px solid #c8b08b;
   background: #fff;
 }
-
-/* BUTTONS */
 
 button {
   padding: 10px 16px;
@@ -126,16 +110,12 @@ button:hover {
   background: linear-gradient(135deg,#f0dcb5,#ffeccf);
 }
 
-/* CANVASES */
-
 canvas {
   margin-top: 20px;
   background: #ffffff;
   border: 2px solid #d3b892;
   border-radius: 12px;
 }
-
-/* MODAL */
 
 .modal.hidden {
   display: none;
@@ -162,8 +142,6 @@ canvas {
   position: relative;
 }
 
-/* CLOSE BUTTON */
-
 .close-btn {
   position: absolute;
   right: 20px;
@@ -175,15 +153,11 @@ canvas {
   cursor: pointer;
 }
 
-/* MODAL GRID */
-
 #modalWrapper {
   display: grid;
   grid-template-columns: 330px 1fr 400px;
   gap: 18px;
 }
-
-/* INFO BOX */
 
 .modal-info-block {
   background: #fffdf8;
@@ -200,8 +174,6 @@ canvas {
   font-size: 0.75rem;
   text-transform: uppercase;
 }
-
-/* CHART FRAME */
 
 .chart-frame {
   background: #fffaf2;
