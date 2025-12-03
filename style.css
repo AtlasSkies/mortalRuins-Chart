@@ -202,15 +202,10 @@ canvas {
   padding-bottom: 2px;
 }
 
-/* Info lines */
-.info-line {
-  margin-left: 6px;
-  margin-bottom: 4px;
-}
-
-/* Metrics (indented) */
+/* Unified indentation for both info + metrics */
+.info-line,
 .metric-line {
-  margin-left: 18px;
+  margin-left: 12px;
   margin-bottom: 4px;
 }
 
