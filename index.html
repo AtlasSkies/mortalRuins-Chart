@@ -11,11 +11,10 @@
   <div class="page-container">
     <header>
       <h1>Character Ability Chart</h1>
-      <p class="subtitle">Ruins Archive Registry</p>
+      <p class="subtitle">Arcane Registry // Ability Classification Interface</p>
     </header>
 
     <main>
-
       <!-- LEFT PANEL -->
       <section class="form-section">
 
@@ -26,50 +25,24 @@
             Name
             <input id="charName" type="text">
           </label>
-
           <label>
             Species
             <input id="charSpecies" type="text">
           </label>
-
           <label>
             Ability
             <input id="charAbility" type="text">
           </label>
 
+          <!-- LEVEL IS AUTO-CALCULATED -->
           <label>
-            Patron God
-            <select id="charGod">
-              <option selected>Unknown</option>
-              <option>Dead</option>
-              <option>Echara</option>
-              <option>Jericho</option>
-              <option>Metrador</option>
-              <option>Ormir</option>
-              <option>Phosiris</option>
-              <option>Remora</option>
-              <option>Shakur</option>
-              <option>Skylar</option>
-              <option>The Ruins</option>
-              <option>Willow</option>
-              <option>Zane</option>
-            </select>
+            Level
+            <input id="charLevel" type="text" readonly>
           </label>
 
           <label>
             Danger Level
-            <select id="charDanger">
-              <option>None</option>
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
-              <option>Ultra</option>
-            </select>
-          </label>
-
-          <label>
-            Level
-            <input id="charLevel" type="text" readonly>
+            <input id="charDanger" type="text">
           </label>
         </div>
 
@@ -77,7 +50,7 @@
 
         <div class="form-grid stats-grid">
           <label>
-            [Redacted]
+            Overall Rating
             <input id="overallRating" type="number" min="1" max="10" step="0.1" value="7.5">
           </label>
           <label>
@@ -130,51 +103,42 @@
         <h2>Chart Preview</h2>
         <canvas id="fullChartCanvas" width="550" height="550"></canvas>
       </section>
-
     </main>
   </div>
 
-  <!-- POPUP -->
+  <!-- MODAL POPUP -->
   <div id="chartModal" class="modal hidden">
     <div class="modal-content">
+      <button id="closeModalBtn" class="close-btn">×</button>
 
-      <!-- X CLOSE -->
-      <button id="closeModalBtn" class="close-btn">✕</button>
-
-      <!-- HEADER -->
       <div class="gov-header">
-        <div class="gov-title-main">Ruins Archive</div>
-        <div class="gov-title-sub">File Type: <span id="fileTypeGod"></span> Dossier</div>
+        <div class="gov-tag">[ SECURE ARCANE REGISTRY // LEVEL OMEGA ACCESS ]</div>
+        <div class="gov-meta">
+          RECORD TYPE: CHARACTER DOSSIER · SECTOR: META-HUMAN ASSETS
+        </div>
       </div>
 
       <div id="modalWrapper">
-
-        <!-- IMAGE -->
+        <!-- LEFT: IMAGE + INFO -->
         <div class="modal-left">
-          <div class="modal-parchment">
-            <div class="modal-image-frame">
-              <img id="modalImage" alt="Character Image">
-            </div>
+          <div class="modal-image-frame">
+            <img id="modalImage" alt="Character File Image">
+          </div>
+
+          <div id="modalInfo" class="modal-info-block">
+            <!-- Filled by JS -->
           </div>
         </div>
 
-        <!-- TEXT -->
-        <div class="modal-center">
-          <div id="modalInfo" class="modal-info-block"></div>
-        </div>
-
-        <!-- CHART -->
+        <!-- RIGHT: CHART -->
         <div class="modal-right">
           <div class="chart-frame">
-            <div class="chart-frame-label">Ruins Power Wheel</div>
-            <canvas id="modalChartCanvas" width="494" height="494"></canvas>
+            <canvas id="modalChartCanvas" width="550" height="550"></canvas>
           </div>
-
           <button id="modalDownloadBtn" class="download-btn">
             Download Character Chart
           </button>
         </div>
-
       </div>
     </div>
   </div>
