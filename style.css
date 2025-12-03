@@ -129,6 +129,12 @@ canvas {
   border-radius: 12px;
 }
 
+/* Make popup wheel visually 10% smaller (without losing resolution) */
+#modalChartCanvas {
+  transform: scale(0.9);
+  transform-origin: top left;
+}
+
 /* ---------------- MODAL (GOV FILE STYLE) ---------------- */
 
 .modal.hidden {
@@ -235,6 +241,12 @@ canvas {
   line-height: 1.5rem;
 }
 
+.modal-info-block .label {
+  font-weight: 600;
+  color: #ffc857;
+  letter-spacing: 0.06em;
+}
+
 /* Right: chart */
 
 .modal-right {
@@ -255,13 +267,4 @@ canvas {
 .download-btn {
   margin-top: 12px;
   background: linear-gradient(135deg, #ff7a8a, #ffbf69);
-}
-
-/* ========================================================= */
-/*       ⭐ NEW: SHRINK POPUP RUINS POWER WHEEL 10%          */
-/* ========================================================= */
-
-#modalChartCanvas {
-  transform: scale(0.90);      /* 10% smaller */
-  transform-origin: top left;  /* Scale from top-left so layout stays stable */
 }
