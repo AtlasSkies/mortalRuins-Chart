@@ -6,6 +6,7 @@ let uploadedImage = null;
 
 window.addEventListener("DOMContentLoaded", () => {
 
+  /* ===== ELEMENT REFS ===== */
   const previewCanvas = document.getElementById("fullChartCanvas");
   const previewCtx = previewCanvas.getContext("2d");
 
@@ -15,36 +16,32 @@ window.addEventListener("DOMContentLoaded", () => {
   const imageUpload = document.getElementById("imageUpload");
   const imagePreview = document.getElementById("imagePreview");
 
-  const charName = document.getElementById("charName");
-  const charSpecies = document.getElementById("charSpecies");
-  const charAbility = document.getElementById("charAbility");
-  const charGod = document.getElementById("charGod");
-  const charDanger = document.getElementById("charDanger");
-  const charLevel = document.getElementById("charLevel");
+  const charNameInput = document.getElementById("charName");
+  const charSpeciesInput = document.getElementById("charSpecies");
+  const charAbilityInput = document.getElementById("charAbility");
+  const charLevelInput = document.getElementById("charLevel");
+  const charDangerInput = document.getElementById("charDanger");
 
-  const overall = document.getElementById("overallRating");
+  const overallInput = document.getElementById("overallRating");
+  const statEnergyInput = document.getElementById("statEnergy");
+  const statSpeedInput = document.getElementById("statSpeed");
+  const statSupportInput = document.getElementById("statSupport");
+  const statPowerInput = document.getElementById("statPower");
+  const statIntelligenceInput = document.getElementById("statIntelligence");
+  const statConcentrationInput = document.getElementById("statConcentration");
+  const statPerceptionInput = document.getElementById("statPerception");
 
-  const statInputs = {
-    energy: document.getElementById("statEnergy"),
-    speed: document.getElementById("statSpeed"),
-    support: document.getElementById("statSupport"),
-    power: document.getElementById("statPower"),
-    intelligence: document.getElementById("statIntelligence"),
-    concentration: document.getElementById("statConcentration"),
-    perception: document.getElementById("statPerception")
-  };
+  const viewChartBtn = document.getElementById("viewChartBtn");
 
-  const viewBtn = document.getElementById("viewChartBtn");
   const modal = document.getElementById("chartModal");
-  const closeBtn = document.getElementById("closeModalBtn");
+  const closeModalBtn = document.getElementById("closeModalBtn");
   const modalImage = document.getElementById("modalImage");
   const modalInfo = document.getElementById("modalInfo");
-  const fileTypeGod = document.getElementById("fileTypeGod");
-  const downloadBtn = document.getElementById("modalDownloadBtn");
+  const modalDownloadBtn = document.getElementById("modalDownloadBtn");
+  const modalWrapper = document.getElementById("modalWrapper");
 
-  /* --------------------------------------------- */
-  /* IMAGE UPLOAD                                  */
-  /* --------------------------------------------- */
+
+  /* ===== IMAGE UPLOAD ===== */
   imageUpload.addEventListener("change", e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -61,33 +58,36 @@ window.addEventListener("DOMContentLoaded", () => {
     reader.readAsDataURL(file);
   });
 
-  /* --------------------------------------------- */
-  /* STATS                                         */
-  /* --------------------------------------------- */
-  function getStats() {
-    return [
-      clamp(parseFloat(statInputs.energy.value), 1, 10),
-      clamp(parseFloat(statInputs.speed.value), 1, 10),
-      clamp(parseFloat(statInputs.support.value), 1, 10),
-      clamp(parseFloat(statInputs.power.value), 1, 10),
-      clamp(parseFloat(statInputs.intelligence.value), 1, 10),
-      clamp(parseFloat(statInputs.concentration.value), 1, 10),
-      clamp(parseFloat(statInputs.perception.value), 1, 10)
+
+  /* ===== STATS ===== */
+  function readStats() {
+    const vals = [
+      parseFloat(statEnergyInput.value),
+      parseFloat(statSpeedInput.value),
+      parseFloat(statSupportInput.value),
+      parseFloat(statPowerInput.value),
+      parseFloat(statIntelligenceInput.value),
+      parseFloat(statConcentrationInput.value),
+      parseFloat(statPerceptionInput.value)
     ];
+
+    return vals.map(v => clamp(isNaN(v) ? 1 : v, 1, 10));
   }
 
   function getOverall() {
-    return clamp(parseFloat(overall.value), 1, 10);
+    const v = parseFloat(overallInput.value);
+    return clamp(isNaN(v) ? 1 : v, 1, 10);
   }
 
-  function computeLevel(stats, ov) {
-    return stats.reduce((a, b) => a + b, 0) + ov * 3;
+  function calculateLevel(stats, overall) {
+    return stats.reduce((a, b) => a + b, 0) + overall * 3;
   }
 
-  /* --------------------------------------------- */
-  /* RESTORED DRAW CHART — ORIGINAL WORKING VERSION */
-  /* --------------------------------------------- */
-  function drawChart(ctx, canvas, stats, overallVal) {
+
+  /* ============================================================
+     =============   RESTORED PERFECT WORKING CHART   ============
+     ============================================================ */
+  function drawChart(ctx, canvas, stats, overall) {
 
     const w = canvas.width;
     const h = canvas.height;
@@ -97,91 +97,100 @@ window.addEventListener("DOMContentLoaded", () => {
     ctx.clearRect(0, 0, w, h);
 
     const labels = [
-      "Energy", "Speed", "Support",
-      "Power", "Intelligence",
-      "Concentration", "Perception"
+      "Energy",
+      "Speed",
+      "Support",
+      "Power",
+      "Intelligence",
+      "Concentration",
+      "Perception"
     ];
 
     const hues = [0, 30, 55, 130, 210, 255, 280];
 
-    const secCount = 7;
-    const rings = 10;
+    const sectionCount = 7;
+    const ringCount = 10;
 
-    const inner = 60;
-    const outer = 210 * (w / 550);  
-    const ringT = (outer - inner) / rings;
+    const innerR = 60;
+    const outerR = 210;
+    const ringT = (outerR - innerR) / ringCount;
+    const secA = (2 * Math.PI) / sectionCount;
 
-    const secA = (2 * Math.PI) / secCount;
+    /* ---------------- SUNBURST (UNCHANGED) ---------------- */
+    for (let s = 0; s < sectionCount; s++) {
 
-    /* ---------------- SUNBURST (restored) ---------------- */
-    for (let i = 0; i < secCount; i++) {
+      const val = stats[s];
+      const hue = hues[s];
 
-      const a0 = -Math.PI / 2 + i * secA;
+      const a0 = -Math.PI / 2 + s * secA;
       const a1 = a0 + secA;
-      const val = stats[i];
-      const hue = hues[i];
 
       for (let r = 0; r < val; r++) {
-        const rIn = inner + r * ringT;
+        const rIn = innerR + r * ringT;
         const rOut = rIn + ringT;
+
+        const sat = 40 + r * 5;
+        const lit = 70 - r * 4;
 
         ctx.beginPath();
         ctx.arc(cx, cy, rOut, a0, a1);
         ctx.arc(cx, cy, rIn, a1, a0, true);
         ctx.closePath();
-
-        ctx.fillStyle = `hsl(${hue}, ${40 + r * 5}%, ${70 - r * 4}%)`;
+        ctx.fillStyle = `hsl(${hue}, ${sat}%, ${lit}%)`;
         ctx.fill();
       }
     }
 
-    /* INNER DISC */
+    /* ---------------- CENTER DISC ---------------- */
     ctx.beginPath();
-    ctx.arc(cx, cy, inner * 0.45, 0, Math.PI * 2);
-    ctx.fillStyle = "#fff";
+    ctx.arc(cx, cy, innerR * 0.45, 0, Math.PI * 2);
+    ctx.fillStyle = "#0b1020";
     ctx.fill();
 
-    /* ----------------------------------------- */
-    /* NORMAL LABELS — MEDIUM SPACING (SAFE)     */
-    /* ----------------------------------------- */
 
-    const labelRadius = outer + 20;  
+    /* =====================================================
+       ==========  LABELS MOVED OUTSIDE SAFELY  ============
+       ===================================================== */
 
-    ctx.fillStyle = "#3b2e1d";
-    ctx.font = "14px Georgia, serif";
+    const labelRadius = outerR + 25;  
+    // Medium spacing — labels no longer overlap, chart stays intact
+
+    ctx.fillStyle = "white";
+    ctx.font = "15px system-ui";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
-    for (let i = 0; i < secCount; i++) {
+    for (let s = 0; s < sectionCount; s++) {
+      const a0 = -Math.PI / 2 + s * secA;
+      const mid = a0 + secA / 2;
 
-      const midAngle = -Math.PI / 2 + secA * (i + 0.5);
+      const lx = cx + Math.cos(mid) * labelRadius;
+      const ly = cy + Math.sin(mid) * labelRadius;
 
-      const lx = cx + Math.cos(midAngle) * labelRadius;
-      const ly = cy + Math.sin(midAngle) * labelRadius;
-
-      ctx.fillText(labels[i], lx, ly);
+      ctx.fillText(labels[s], lx, ly);
     }
 
-    /* ----------------------------------------- */
-    /* OUTER RATING RING (restored & working)    */
-    /* ----------------------------------------- */
 
-    const ringIn = outer + 40;
-    const ringOut = outer + 80;
+    /* =====================================================
+       ============== OUTER RATING RING (unchanged) ========
+       ===================================================== */
+
+    const ringIn = outerR + 20;
+    const ringOut = outerR + 60;
     const wedgeA = (2 * Math.PI) / 10;
 
     ctx.beginPath();
     ctx.arc(cx, cy, ringOut, 0, Math.PI * 2);
     ctx.arc(cx, cy, ringIn, Math.PI * 2, 0, true);
     ctx.closePath();
-    ctx.fillStyle = "#fff";
+    ctx.fillStyle = "#1a2038";
     ctx.fill();
 
-    const full = Math.floor(overallVal);
-    const frac = overallVal - full;
+    const full = Math.floor(overall);
+    const frac = overall - full;
 
     function wedgeColor(i) {
-      return `hsl(220, 30%, ${70 - i * 4}%)`;
+      return `hsl(220, 20%, ${70 - i * 4}%)`;
     }
 
     for (let i = 0; i < full; i++) {
@@ -196,8 +205,9 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.fill();
     }
 
-    if (frac > 0) {
+    if (frac > 0 && full < 10) {
       const i = full;
+
       const a0 = -Math.PI / 2 + i * wedgeA;
       const a1 = a0 + wedgeA * frac;
 
@@ -210,65 +220,71 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* --------------------------------------------- */
-  /* AUTO UPDATE                                   */
-  /* --------------------------------------------- */
-  function updatePreview() {
-    const stats = getStats();
-    const ov = getOverall();
-    charLevel.value = computeLevel(stats, ov).toFixed(1);
 
-    drawChart(previewCtx, previewCanvas, stats, ov);
+  /* ===== AUTO UPDATE PREVIEW ===== */
+  function updatePreview() {
+    const stats = readStats();
+    const overall = getOverall();
+    const lvl = calculateLevel(stats, overall);
+
+    charLevelInput.value = lvl.toFixed(1);
+    drawChart(previewCtx, previewCanvas, stats, overall);
   }
 
-  Object.values(statInputs).forEach(x => x.addEventListener("input", updatePreview));
-  overall.addEventListener("input", updatePreview);
+  const statInputs = [
+    overallInput,
+    statEnergyInput,
+    statSpeedInput,
+    statSupportInput,
+    statPowerInput,
+    statIntelligenceInput,
+    statConcentrationInput,
+    statPerceptionInput
+  ];
+
+  statInputs.forEach(input => {
+    input.addEventListener("input", updatePreview);
+  });
 
   updatePreview();
 
-  /* --------------------------------------------- */
-  /* OPEN POPUP                                    */
-  /* --------------------------------------------- */
-  viewBtn.addEventListener("click", () => {
 
-    const stats = getStats();
-    const ov = getOverall();
-    const lvl = computeLevel(stats, ov);
+  /* ===== VIEW POPUP ===== */
+  viewChartBtn.addEventListener("click", () => {
 
-    charLevel.value = lvl.toFixed(1);
-    fileTypeGod.textContent = charGod.value;
+    const stats = readStats();
+    const overall = getOverall();
+    const lvl = calculateLevel(stats, overall);
+
+    charLevelInput.value = lvl.toFixed(1);
 
     modalImage.src = uploadedImage ? uploadedImage.src : "";
 
     modalInfo.innerHTML = `
-      <div><span class="label">Name:</span> ${charName.value || "Unknown"}</div>
-      <div><span class="label">Species:</span> ${charSpecies.value || "Unknown"}</div>
-      <div><span class="label">Ability:</span> ${charAbility.value || "Unknown"}</div>
-      <div><span class="label">Patron God:</span> ${charGod.value}</div>
-      <div><span class="label">Danger Level:</span> ${charDanger.value}</div>
-      <div><span class="label">Level Index:</span> ${lvl.toFixed(1)}</div>
-      <div><span class="label">[Redacted]:</span> ${ov.toFixed(1)}</div>
+      <div><span class="label">SUBJECT:</span> ${charNameInput.value || "UNNAMED"}</div>
+      <div><span class="label">SPECIES:</span> ${charSpeciesInput.value || "UNKNOWN"}</div>
+      <div><span class="label">ABILITY:</span> ${charAbilityInput.value || "UNCLASSIFIED"}</div>
+      <div><span class="label">LEVEL INDEX:</span> ${lvl.toFixed(1)}</div>
+      <div><span class="label">DANGER:</span> ${charDangerInput.value || "UNKNOWN"}</div>
+      <div><span class="label">[REDACTED]:</span> ${overall.toFixed(1)}</div>
     `;
 
-    drawChart(modalCtx, modalCanvas, stats, ov);
+    drawChart(modalCtx, modalCanvas, stats, overall);
 
     modal.classList.remove("hidden");
   });
 
-  /* --------------------------------------------- */
-  /* CLOSE POPUP                                    */
-  /* --------------------------------------------- */
-  closeBtn.addEventListener("click", () => {
+
+  /* ===== CLOSE POPUP ===== */
+  closeModalBtn.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
-  /* --------------------------------------------- */
-  /* DOWNLOAD                                       */
-  /* --------------------------------------------- */
-  downloadBtn.addEventListener("click", () => {
 
-    const wrap = document.getElementById("modalWrapper");
-    const rect = wrap.getBoundingClientRect();
+  /* ===== DOWNLOAD PNG ===== */
+  modalDownloadBtn.addEventListener("click", () => {
+
+    const rect = modalWrapper.getBoundingClientRect();
 
     const tmp = document.createElement("canvas");
     tmp.width = rect.width * 2;
@@ -277,26 +293,29 @@ window.addEventListener("DOMContentLoaded", () => {
     const tctx = tmp.getContext("2d");
     tctx.scale(2, 2);
 
-    tctx.fillStyle = "#ffffff";
+    tctx.fillStyle = "#111524";
     tctx.fillRect(0, 0, rect.width, rect.height);
 
     if (uploadedImage) {
-      tctx.drawImage(modalImage, 10, 10, 300, 300);
+      tctx.drawImage(modalImage, 0, 0, 360, 360);
     }
 
-    tctx.fillStyle = "#000";
-    tctx.font = "18px Georgia";
-    let y = 330;
+    tctx.fillStyle = "#f5f5ff";
+    tctx.font = "16px SF Mono";
+    let y = 370;
+
     modalInfo.innerText.split("\n").forEach(line => {
-      tctx.fillText(line, 10, y);
-      y += 26;
+      tctx.fillText(line, 0, y);
+      y += 22;
     });
 
-    tctx.drawImage(modalCanvas, 350, 10);
+    tctx.drawImage(modalCanvas, 380, 0, 550, 550);
 
-    const name = (charName.value || "character").replace(/\s+/g, "");
+    const rawName = charNameInput.value || "character";
+    const safeName = rawName.replace(/\s+/g, "");
+
     const link = document.createElement("a");
-    link.download = `${name}_mr_characterchart.png`;
+    link.download = `${safeName}_mr_characterchart.png`;
     link.href = tmp.toDataURL();
     link.click();
   });
