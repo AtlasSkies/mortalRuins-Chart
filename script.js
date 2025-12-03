@@ -107,7 +107,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const rings = 10;
 
     const innerR = 60;
-    const outerR = 210;  // sunburst stays original size
+    const outerR = 210;  // sunburst size
     const ringT = (outerR - innerR) / rings;
     const secA = (2 * Math.PI) / sections;
 
@@ -144,10 +144,11 @@ window.addEventListener("DOMContentLoaded", () => {
        ========== LABELS BETWEEN SUNBURST + RING ============
        ====================================================== */
 
-    const labelTrackRadius = outerR + 30; // increased spacing  
+    // label track sits between sunburst and outer ring
+    const labelTrackRadius = outerR + 15; // gap from sunburst
 
     const chipWidth = 120;
-    const chipHeight = 28;
+    const chipHeight = 24;
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -160,7 +161,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const lx = cx + Math.cos(angle) * labelTrackRadius;
       const ly = cy + Math.sin(angle) * labelTrackRadius;
 
-      /* ---------------- Diamond Plaque ---------------- */
+      // Diamond-cut plaque points
       const hw = chipWidth / 2;
       const hh = chipHeight / 2;
 
@@ -173,24 +174,38 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.lineTo(lx - hw + 12, ly + hh);
       ctx.closePath();
 
-      ctx.fillStyle = "#1a1a1a"; 
+      // Fill
+      ctx.fillStyle = "#1a1a1a";
       ctx.fill();
 
-      ctx.strokeStyle = "#c9a552"; 
+      // Gold trim
+      ctx.strokeStyle = "#c9a552";
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      /* ---------------- Engraved Text ---------------- */
+      // Slight inner glow
+      ctx.save();
+      ctx.clip();
+      const grad = ctx.createLinearGradient(lx, ly - hh, lx, ly + hh);
+      grad.addColorStop(0, "rgba(255, 255, 255, 0.12)");
+      grad.addColorStop(1, "rgba(0, 0, 0, 0.4)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(lx - hw, ly - hh, chipWidth, chipHeight);
+      ctx.restore();
+
+      // Engraved text, slightly elevated
       ctx.fillStyle = "#f9e7c3";
-      ctx.fillText(labels[i], lx, ly - 3); // slightly elevated text
+      ctx.fillText(labels[i], lx, ly - 3);
     }
 
     /* ========================================================
-       ================ OUTER RING (SHRUNK 10%) ===============
+       ================ OUTER RING (JUST OUTSIDE) =============
        ======================================================== */
 
-    const ringIn = (outerR + 20) * 0.90;   
-    const ringOut = (outerR + 60) * 0.90;  
+    // place ring fully outside chips
+    const chipOuterEdge = labelTrackRadius + chipHeight / 2;
+    const ringIn = chipOuterEdge + 3;       // small gap
+    const ringOut = ringIn + 30;            // thickness
 
     const wedgeN = 10;
     const wedgeA = (2 * Math.PI) / wedgeN;
@@ -289,10 +304,12 @@ window.addEventListener("DOMContentLoaded", () => {
     tctx.fillStyle = "#111524";
     tctx.fillRect(0, 0, rect.width, rect.height);
 
+    // Draw left image
     if (uploadedImage) {
       tctx.drawImage(modalImage, 0, 0, 360, 360);
     }
 
+    // Draw info text
     tctx.fillStyle = "white";
     tctx.font = "16px SF Mono";
     let y = 370;
@@ -302,6 +319,7 @@ window.addEventListener("DOMContentLoaded", () => {
       y += 22;
     });
 
+    // Draw chart
     tctx.drawImage(modalCanvas, 380, 0, 550, 550);
 
     const name = (charName.value || "character").replace(/\s+/g, "");
