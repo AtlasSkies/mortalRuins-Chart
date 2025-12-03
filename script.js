@@ -46,7 +46,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("modalDownloadBtn");
 
   /* --------------------------------------------- */
-  /* IMAGE UPLOAD + AUTO-FIT PREVIEW               */
+  /* IMAGE UPLOAD                                  */
   /* --------------------------------------------- */
   imageUpload.addEventListener("change", e => {
     const file = e.target.files[0];
@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   /* --------------------------------------------- */
-  /* CHARACTER ID INPUTS                           */
+  /* CHARACTER ID HANDLING                         */
   /* --------------------------------------------- */
   charIdLetters.addEventListener("input", () => {
     charIdLetters.value = charIdLetters.value.replace(/[^A-Za-z]/g, "").toUpperCase();
@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   /* --------------------------------------------- */
-  /* DRAW CHART (sunburst + ring hugging it)       */
+  /* DRAW CHART (SUNBURST + RING TOUCHING)         */
   /* --------------------------------------------- */
   function drawChart(ctx, canvas, stats, overallVal) {
 
@@ -122,22 +122,19 @@ window.addEventListener("DOMContentLoaded", () => {
     const secCount = 7;
     const rings = 10;
 
-    /* Sunburst bigger */
     const sunburstScale = 1.08;
-
-    /* Base scale for ring thickness */
     const ringScale = 0.85;
 
     const maxRadius = (w / 2) * sunburstScale;
 
-    const inner = 0;                // start sunburst at center
-    const outer = maxRadius * 0.78; // outer radius of sunburst
+    const inner = 0;
+    const outer = maxRadius * 0.78;
     const ringT = (outer - inner) / rings;
 
     const secA = (2 * Math.PI) / secCount;
     const hues = [0, 30, 55, 130, 210, 255, 280];
 
-    /* --------- SUNBURST --------- */
+    /* SUNBURST SECTIONS */
     for (let i = 0; i < secCount; i++) {
 
       const a0 = -Math.PI / 2 + i * secA;
@@ -160,23 +157,22 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    /* Center circle */
+    /* CENTER CIRCLE */
     ctx.beginPath();
     ctx.arc(cx, cy, outer * 0.12, 0, Math.PI * 2);
     ctx.fillStyle = "#ffffff";
     ctx.fill();
 
-    /* --------- OUTER RING (hugging the sunburst) --------- */
+    /* OUTER RING TOUCHING SUNBURST */
+    const ringGap = 0;
+    const baseRingThickness = 30 * ringScale;
 
-    const ringGap = 0; // no space between sunburst and ring
-    const baseRingThickness = 30 * ringScale; // thickness of ring
-
-    const ringIn = outer + ringGap;              // starts right at sunburst edge
-    const ringOut = ringIn + baseRingThickness;  // extends outward by thickness
+    const ringIn = outer + ringGap;
+    const ringOut = ringIn + baseRingThickness;
 
     const wedgeA = (2 * Math.PI) / 10;
 
-    /* Background ring */
+    /* BACKGROUND RING */
     ctx.beginPath();
     ctx.arc(cx, cy, ringOut, 0, Math.PI * 2);
     ctx.arc(cx, cy, ringIn, Math.PI * 2, 0, true);
@@ -191,7 +187,7 @@ window.addEventListener("DOMContentLoaded", () => {
       return `hsl(220, 30%, ${70 - i * 4}%)`;
     }
 
-    /* Full wedges */
+    /* FULL WEDGES */
     for (let i = 0; i < full; i++) {
       const a0 = -Math.PI / 2 + i * wedgeA;
       const a1 = a0 + wedgeA;
@@ -204,7 +200,7 @@ window.addEventListener("DOMContentLoaded", () => {
       ctx.fill();
     }
 
-    /* Fractional wedge */
+    /* PARTIAL WEDGE */
     if (frac > 0) {
       const i = full;
       const a0 = -Math.PI / 2 + i * wedgeA;
@@ -219,9 +215,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* --------------------------------------------- */
-  /* LIVE PREVIEW                                  */
-  /* --------------------------------------------- */
+  /* LIVE PREVIEW */
   function updatePreview() {
     const stats = getStats();
     const ov = getOverall();
@@ -261,54 +255,43 @@ window.addEventListener("DOMContentLoaded", () => {
     modal.classList.remove("hidden");
   });
 
-  /* --------------------------------------------- */
-  /* CLOSE POPUP                                   */
-  /* --------------------------------------------- */
+  /* CLOSE POPUP */
   closeBtn.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
-  /* --------------------------------------------- */
-  /* DOWNLOAD CHART                                */
-  /* --------------------------------------------- */
-  downloadBtn.addEventListener("click", () => {
+  /* --------------------------------------------------- */
+  /* DOWNLOAD EXACT POPUP VIEW (no X button or DL button) */
+  /* --------------------------------------------------- */
+  downloadBtn.addEventListener("click", async () => {
 
-    const wrap = document.getElementById("modalWrapper");
-    const rect = wrap.getBoundingClientRect();
+    const modalContent = document.querySelector(".modal-content");
+    const closeBtn = document.getElementById("closeModalBtn");
+    const dlBtn = document.getElementById("modalDownloadBtn");
 
-    const tmp = document.createElement("canvas");
-    tmp.width = rect.width * 2;
-    tmp.height = rect.height * 2;
+    // Hide UI elements
+    closeBtn.style.display = "none";
+    dlBtn.style.display = "none";
 
-    const tctx = tmp.getContext("2d");
-    tctx.scale(2, 2);
+    // Let layout update
+    await new Promise(r => setTimeout(r, 50));
 
-    tctx.fillStyle = "#ffffff";
-    tctx.fillRect(0, 0, rect.width, rect.height);
+    html2canvas(modalContent, {
+      backgroundColor: "#ffffff",
+      scale: 2
+    }).then(canvas => {
 
-    /* Render image */
-    if (uploadedImage) {
-      tctx.drawImage(modalImage, 10, 10, 240, 300);
-    }
+      // Restore buttons
+      closeBtn.style.display = "";
+      dlBtn.style.display = "";
 
-    /* Render text */
-    tctx.fillStyle = "#000";
-    tctx.font = "18px Georgia";
-    let y = 330;
-    modalInfo.innerText.split("\n").forEach(line => {
-      tctx.fillText(line, 10, y);
-      y += 26;
+      // Download
+      const name = (charName.value || "character").replace(/\s+/g, "");
+      const link = document.createElement("a");
+      link.download = `${name}_mr_characterchart.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
     });
-
-    /* Render chart */
-    tctx.drawImage(modalCanvas, 350, 10);
-
-    /* Download */
-    const name = (charName.value || "character").replace(/\s+/g, "");
-    const link = document.createElement("a");
-    link.download = `${name}_mr_characterchart.png`;
-    link.href = tmp.toDataURL();
-    link.click();
   });
 
 });
