@@ -16,7 +16,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const imagePreview = document.getElementById("imagePreview");
 
   const charName = document.getElementById("charName");
-  const charId = document.getElementById("charId");
+  const charIdLetters = document.getElementById("charIdLetters");
+  const charIdNumbers = document.getElementById("charIdNumbers");
+
   const charSpecies = document.getElementById("charSpecies");
   const charAbility = document.getElementById("charAbility");
   const charGod = document.getElementById("charGod");
@@ -63,13 +65,23 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   /* --------------------------------------------- */
-  /* CHARACTER ID (UPPERCASE LETTERS)              */
+  /* CHARACTER ID INPUTS                           */
   /* --------------------------------------------- */
-  if (charId) {
-    charId.addEventListener("input", () => {
-      // Force letters to uppercase, leave digits and dash as is
-      charId.value = charId.value.toUpperCase();
-    });
+  charIdLetters.addEventListener("input", () => {
+    charIdLetters.value = charIdLetters.value.replace(/[^A-Za-z]/g, "").toUpperCase();
+  });
+
+  charIdNumbers.addEventListener("input", () => {
+    charIdNumbers.value = charIdNumbers.value.replace(/[^0-9]/g, "");
+  });
+
+  function getCharacterID() {
+    const letters = charIdLetters.value;
+    const numbers = charIdNumbers.value;
+    if (letters.length === 3 && numbers.length === 9) {
+      return `${letters}-${numbers}`;
+    }
+    return "Unknown";
   }
 
   /* --------------------------------------------- */
@@ -96,7 +108,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   /* --------------------------------------------- */
-  /* DRAW CHART                                    */
+  /* DRAW CHART — WITH RING SHRUNK 10%             */
   /* --------------------------------------------- */
   function drawChart(ctx, canvas, stats, overallVal) {
     const w = canvas.width;
@@ -106,20 +118,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
     ctx.clearRect(0, 0, w, h);
 
-    // kept label array only if needed later, but no longer drawn
-    const labels = [
-      "Energy", "Speed", "Support",
-      "Power", "Intelligence",
-      "Concentration", "Perception"
-    ];
-
     const hues = [0, 30, 55, 130, 210, 255, 280];
 
     const secCount = 7;
     const rings = 10;
 
-    const inner = 60;
-    const outer = 210 * (w / 550);
+    // SHRINKED BY 10%
+    const scale = 0.90;
+
+    const inner = 60 * scale;
+    const outer = (210 * (w / 550)) * scale;
     const ringT = (outer - inner) / rings;
 
     const secA = (2 * Math.PI) / secCount;
@@ -147,23 +155,18 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    /* -------- INNER CIRCLE -------- */
+    /* INNER CIRCLE */
     ctx.beginPath();
     ctx.arc(cx, cy, inner * 0.45, 0, Math.PI * 2);
     ctx.fillStyle = "#fff";
     ctx.fill();
 
-    /* ----------------------------------------- */
-    /* CIRCULAR LABELS REMOVED                   */
-    /* (Previously drew labels around the chart) */
-    /* ----------------------------------------- */
-
-    /* ---------------- OUTER RING ---------------- */
-    const ringIn = outer + 40;
-    const ringOut = outer + 90;
+    /* OUTER WHEEL — SHRUNK 10% */
+    const ringIn = outer + (40 * scale);
+    const ringOut = outer + (90 * scale);
     const wedgeA = (2 * Math.PI) / 10;
 
-    /* Base ring */
+    // Base ring
     ctx.beginPath();
     ctx.arc(cx, cy, ringOut, 0, Math.PI * 2);
     ctx.arc(cx, cy, ringIn, Math.PI * 2, 0, true);
@@ -205,7 +208,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   /* --------------------------------------------- */
-  /* AUTO UPDATE                                   */
+  /* LIVE PREVIEW                                  */
   /* --------------------------------------------- */
   function updatePreview() {
     const stats = getStats();
@@ -234,13 +237,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     modalInfo.innerHTML = `
       <div><span class="label">Name:</span> ${charName.value || "Unknown"}</div>
-      <div><span class="label">Character ID:</span> ${charId.value || "Unknown"}</div>
+      <div><span class="label">Character ID:</span> ${getCharacterID()}</div>
       <div><span class="label">Species:</span> ${charSpecies.value || "Unknown"}</div>
       <div><span class="label">Ability:</span> ${charAbility.value || "Unknown"}</div>
       <div><span class="label">Patron God:</span> ${charGod.value}</div>
       <div><span class="label">Danger Level:</span> ${charDanger.value}</div>
       <div><span class="label">Level Index:</span> ${lvl.toFixed(1)}</div>
-      <div><span class="label">[Redacted]:</span> ${ov.toFixed(1)}</div>
     `;
 
     drawChart(modalCtx, modalCanvas, stats, ov);
@@ -249,14 +251,14 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   /* --------------------------------------------- */
-  /* CLOSE POPUP                                   */
+  /* CLOSE POPUP                                    */
   /* --------------------------------------------- */
   closeBtn.addEventListener("click", () => {
     modal.classList.add("hidden");
   });
 
   /* --------------------------------------------- */
-  /* DOWNLOAD                                      */
+  /* DOWNLOAD CHART                                */
   /* --------------------------------------------- */
   downloadBtn.addEventListener("click", () => {
 
